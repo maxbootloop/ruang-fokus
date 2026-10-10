@@ -68,15 +68,37 @@ Aplikasi ini murni berkas statis, jadi GitHub Pages bisa langsung menyajikannya 
 
 ### Langkah pertama: unggah ke GitHub
 
-Belum ada repositori? Buat dulu repositori kosong bernama `ruang-fokus` di GitHub
-(**tanpa** README, tanpa `.gitignore`, tanpa lisensi — semuanya sudah ada di sini), lalu:
+Pilih salah satu cara di bawah.
+
+#### Cara A — GitHub Desktop (paling mudah, tanpa baris perintah)
+
+1. Buka **GitHub Desktop** → menu **File** → **Add local repository…** (atau `Ctrl+O`)
+2. Pada **Local path**, pilih folder proyek ini (folder yang berisi `index.html`)
+3. Klik **Add repository**
+4. Klik tombol **Publish repository** di bagian atas
+5. Isi **Name** = `ruang-fokus`, dan **hilangkan centang** *Keep this code private*
+   (GitHub Pages gratis hanya berjalan pada repositori publik)
+6. Klik **Publish repository**
+
+Setelah selesai, repositori ada di `https://github.com/USERNAME/ruang-fokus` dan komit lokal sudah
+terunggah. Untuk perubahan berikutnya, cukup **Commit to main** lalu **Push origin** di GitHub Desktop.
+
+#### Cara B — baris perintah
+
+Repositori lokal sudah disiapkan (`git init`, branch `main`, komit pertama). Bila berkas `.git` belum
+ada — misalnya karena Anda mengunduh proyek ini sebagai ZIP — jalankan dulu:
 
 ```bash
 cd ruang-fokus
-git init
+git init -b main
 git add .
 git commit -m "Ruang Fokus: game belajar singkat untuk anak ADHD"
-git branch -M main
+```
+
+Lalu buat repositori kosong bernama `ruang-fokus` di GitHub
+(**tanpa** README, tanpa `.gitignore`, tanpa lisensi — semuanya sudah ada di sini), dan:
+
+```bash
 git remote add origin https://github.com/USERNAME/ruang-fokus.git
 git push -u origin main
 ```
@@ -84,6 +106,9 @@ git push -u origin main
 Ganti `USERNAME` dengan nama pengguna GitHub Anda. Bila `git` belum terpasang, unduh dari
 [git-scm.com](https://git-scm.com/downloads) atau unggah folder lewat tombol **Add file → Upload files**
 di halaman repositori.
+
+> **Catatan Windows:** `.gitattributes` sudah menyetel normalisasi akhir baris, sehingga berkas tetap
+> konsisten antara Windows dan runner Linux di GitHub Actions. Jangan hapus berkas itu.
 
 ### Langkah kedua: aktifkan GitHub Pages
 
@@ -238,7 +263,8 @@ adhd-games/
 │   └── pages.yml       # terbitkan ke GitHub Pages setelah uji lulus
 ├── package.json        # skrip npm: start, test, check (tanpa dependensi)
 ├── LICENSE             # MIT + catatan bukan alat medis
-├── .gitignore
+├── .gitignore          # termasuk pola data ekspor anak agar tidak ter-commit
+├── .gitattributes      # normalisasi akhir baris LF lintas Windows/Linux
 └── README.md
 ```
 

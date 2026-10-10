@@ -17,13 +17,13 @@
   "license": "MIT",
   "private": true,
   "type": "module",
-  "homepage": "https://github.com/USERNAME/ruang-fokus",
+  "homepage": "https://maxbootloop.github.io/ruang-fokus/",
   "repository": {
     "type": "git",
-    "url": "https://github.com/USERNAME/ruang-fokus.git"
+    "url": "git+https://github.com/maxbootloop/ruang-fokus.git"
   },
   "bugs": {
-    "url": "https://github.com/USERNAME/ruang-fokus/issues"
+    "url": "https://github.com/maxbootloop/ruang-fokus/issues"
   },
   "engines": {
     "node": ">=18"

@@ -39,7 +39,6 @@
       let running = true;
       let phase = 'idle';
       let breath = 0;
-      let timers = [];
 
       const perRound = 4;
       const inhale = host.round() >= 2 ? 4 : 4;
@@ -72,11 +71,45 @@
         if (c) c.textContent = breath + '/' + perRound + ' napas';
       }
 
-      function clearTimers() { timers.forEach(function (t) { global.clearTimeout(t); }); timers = []; }
-      function later(fn, ms) { timers.push(global.setTimeout(fn, ms)); }
+      /* Penjadwalan yang sadar-jeda: setiap timer mengingat sisa waktunya,
+         sehingga napas tidak terpotong atau meloncat saat tab disembunyikan,
+         anak menekan Jeda, atau sesi masuk jeda gerak. */
+      let schedule = [];
+      let paused = false;
+
+      function clearTimers() {
+        schedule.forEach(function (item) { global.clearTimeout(item.handle); });
+        schedule = [];
+      }
+      function later(fn, ms) {
+        const item = { fn: fn, total: ms, startedAt: performance.now(), handle: null };
+        item.handle = global.setTimeout(function () {
+          schedule = schedule.filter(function (x) { return x !== item; });
+          if (paused) return;
+          fn();
+        }, ms);
+        schedule.push(item);
+      }
+      function pauseTimers() {
+        if (paused) return;
+        paused = true;
+        const now = performance.now();
+        schedule.forEach(function (item) {
+          global.clearTimeout(item.handle);
+          item.remaining = Math.max(0, item.total - (now - item.startedAt));
+        });
+      }
+      function resumeTimers() {
+        if (!paused) return;
+        paused = false;
+        const pending = schedule.slice();
+        schedule = [];
+        pending.forEach(function (item) { later(item.fn, item.remaining == null ? item.total : item.remaining); });
+      }
 
       function begin() {
         clearTimers();
+        paused = false;
         breath = 0;
         updateCount();
         host.setSteps(thisGame.steps, 1);
@@ -149,11 +182,14 @@
       host.setSteps(this.steps, 1);
       later(begin, 700);
 
-      this._cleanup = function () { running = false; clearTimers(); };
+      const cleanup = function () { running = false; clearTimers(); };
+      this._cleanup = cleanup;
+      this._pause = function () { pauseTimers(); };
+      this._resume = function () { resumeTimers(); };
     },
 
-    pause: function () {},
-    resume: function () {},
+    pause: function () { if (this._pause) this._pause(); },
+    resume: function () { if (this._resume) this._resume(); },
     unmount: function () { if (this._cleanup) this._cleanup(); }
   });
 })(window);

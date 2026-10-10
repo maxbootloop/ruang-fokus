@@ -92,6 +92,21 @@
         tiles.forEach(function (t) { t.className = 'cell'; t.disabled = false; });
       }
 
+      /* Timer urutan dilacak supaya bisa dibatalkan saat sesi dibekukan
+         (tab disembunyikan, anak menekan Jeda, atau ada jeda gerak).
+         Kalau tidak, urutan bisa berjalan sendiri tanpa ditonton anak. */
+      let pending = [];
+      function clearPending() {
+        pending.forEach(function (h) { global.clearTimeout(h); });
+        pending = [];
+      }
+      function at(fn, ms) {
+        pending.push(global.setTimeout(function () {
+          if (!running) return;
+          fn();
+        }, ms));
+      }
+
       function newSeq(extra) {
         resetTiles();
         inputIdx = 0;
@@ -104,22 +119,21 @@
       }
 
       function play() {
+        clearPending();
         playing = true;
         hint.textContent = 'Perhatikan urutannya…';
         host.say('Perhatikan');
         tiles.forEach(function (t) { t.disabled = true; });
         global.UI.clear(dots);
         sequence.forEach(function (idx, k) {
-          global.setTimeout(function () {
-            if (!running) return;
+          at(function () {
             const t = tiles[idx];
             t.classList.add('is-lit');
             host.sound('select');
             global.setTimeout(function () { t.classList.remove('is-lit'); }, 420);
           }, 620 * k + 420);
         });
-        global.setTimeout(function () {
-          if (!running) return;
+        at(function () {
           playing = false;
           tiles.forEach(function (t) { t.disabled = false; });
           hint.textContent = 'Sekarang ketuk dengan urutan yang sama.';
@@ -156,8 +170,7 @@
             host.prompt('Benar semua! Kamu mengingat ' + sequence.length + ' langkah.', 'good');
             playing = true;
             tiles.forEach(function (t) { t.disabled = true; });
-            global.setTimeout(function () {
-              if (!running) return;
+            at(function () {
               if (roundNo >= host.roundsTotal()) {
                 host.complete();
                 return;
@@ -180,10 +193,11 @@
           inputIdx = 0;
           setDots(sequence.length);
           if (replaysLeft > 0) {
-            global.setTimeout(function () { if (running) replay(true); }, 900);
+            at(function () { replay(true); }, 900);
           } else {
-            global.setTimeout(function () {
-              if (running) { host.prompt('Tidak masalah. Ini urutan baru, lebih pelan.', 'soft'); newSeq(0); }
+            at(function () {
+              host.prompt('Tidak masalah. Ini urutan baru, lebih pelan.', 'soft');
+              newSeq(0);
             }, 1100);
           }
         }
@@ -193,11 +207,32 @@
       host.setSteps(this.steps, 1);
       newSeq(0);
 
-      this._cleanup = function () { running = false; };
+      this._cleanup = function () { running = false; clearPending(); };
+      /* Saat dibekukan, urutan yang sedang berjalan dibatalkan lalu diulang
+         dari awal ketika anak kembali — lebih baik mengulang daripada
+         menampilkan urutan yang sudah setengah jalan. */
+      this._pause = function () {
+        if (!playing) { clearPending(); return; }
+        clearPending();
+        playing = false;
+        tiles.forEach(function (t) { t.disabled = true; });
+        hint.textContent = 'Dijeda sebentar…';
+      };
+      this._resume = function () {
+        if (!running || playing) return;
+        const waitingForRedo = tiles.some(function (t) { return t.disabled; });
+        if (waitingForRedo) {
+          hint.textContent = 'Kita lihat ulang urutannya, ya.';
+          play();
+        } else {
+          tiles.forEach(function (t) { t.disabled = false; });
+          hint.textContent = 'Sekarang ketuk dengan urutan yang sama.';
+        }
+      };
     },
 
-    pause: function () {},
-    resume: function () {},
+    pause: function () { if (this._pause) this._pause(); },
+    resume: function () { if (this._resume) this._resume(); },
     unmount: function () { if (this._cleanup) this._cleanup(); }
   });
 })(window);

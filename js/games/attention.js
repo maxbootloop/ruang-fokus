@@ -50,9 +50,10 @@
       let running = true;
       let targetShape = '';
       let targetGlyph = '';
-      let hits = 0;
-      let roundHits = 0;
-      const perRound = 4;
+      let hits = 0;          // total temuan benar dalam sesi
+      let roundHits = 0;     // temuan benar pada ronde berjalan
+      let onBoard = 0;       // sisa kotak yang cocok di papan saat ini
+      const perRound = 4;    // temuan yang dibutuhkan untuk menutup satu ronde
 
       const banner = el('div', { class: 'gbar' }, [
         el('div', { class: 'gbar__hint', id: 'lfHint', text: 'Contoh:' }),
@@ -83,17 +84,21 @@
         global.UI.clear(targetBox);
         targetBox.appendChild(el('span', { class: 'gtile__ico', text: SHAPE_SVG[targetShape] }));
         targetBox.appendChild(el('span', { class: 'gtile__t', text: targetGlyph }));
+        targetBox.setAttribute('aria-label', 'Contoh target: ' + targetShape + ' ' + targetGlyph);
       }
 
-      function buildRound() {
+      /* Membangun ulang seluruh papan dengan target yang baru.
+         Target sengaja TIDAK diubah di tengah papan: kalau contohnya berganti
+         sementara kotak lama masih terlihat, kotak lama jadi tidak cocok lagi
+         dan anak bisa buntu tanpa jawaban benar. */
+      function fillBoard() {
         const n = gridSize(host.round());
         const field2 = document.getElementById('lfField');
         global.UI.clear(field2);
-        roundHits = 0;
-        updateCount();
+        onBoard = 0;
         newTarget();
 
-        const targetCount = Math.max(2, Math.round(n / 5));   // 2–3 target per papan
+        const targetCount = Math.max(3, Math.round(n / 4));   // 3–4 kotak cocok per papan
         const indices = global.UI.shuffle(Array.from({ length: n }, function (_, i) { return i; }));
         const targetSet = indices.slice(0, targetCount);
 
@@ -108,35 +113,41 @@
             class: size,
             type: 'button',
             dataset: { t: isT ? '1' : '0' },
-            'aria-label': (isT ? 'kandidat sama ' : 'bukan target ') + shape + ' ' + glyph
+            'aria-label': (isT ? 'kotak cocok: ' : 'bukan target: ') + shape + ' ' + glyph
           }, [
             el('span', { class: 'gtile__ico', text: SHAPE_SVG[shape] }),
             el('span', { class: 'gtile__t', text: glyph })
           ]);
 
-          tile.style.background = 'var(--surface)';
-          if (isT) { tile.style.borderColor = 'var(--line-strong)'; }
+          if (isT) {
+            onBoard++;
+            tile.style.borderColor = 'var(--line-strong)';
+          }
 
           tile.addEventListener('click', function () {
             if (!running || tile.classList.contains('is-faded')) return;
             const ok = tile.dataset.t === '1';
             if (ok) {
-              hits++; roundHits++;
+              hits++; roundHits++; onBoard--;
               host.right(12);
-              host.prompt('Tepat! Kamu menemukan yang sama.', 'good');
               tile.classList.add('is-hit', 'is-faded');
               updateCount();
-              if (roundHits >= perRound) {
-                finishRound();
-                return;
+
+              if (roundHits >= perRound) { endRound(); return; }
+
+              /* Sediakan papan baru bila kotak yang cocok sudah habis,
+                 supaya selalu ada jawaban benar yang bisa ditemukan. */
+              if (onBoard <= 0) {
+                host.prompt('Papan baru! Lihat contohnya lagi.', null);
+                fillBoard();
+              } else {
+                host.prompt('Tepat! Masih ada ' + onBoard + ' kotak yang sama.', 'good');
               }
-              /* target baru setelah benar, supaya anak tidak bosan */
-              newTarget();
             } else {
               host.wrong();
-              host.prompt('Belum sama. Lihat contohnya lagi, lalu coba yang lain.', 'soft');
               tile.classList.add('is-miss');
               global.setTimeout(function () { tile.classList.remove('is-miss'); }, 420);
+              host.prompt('Belum sama. Lihat contohnya di atas, lalu coba lagi.', 'soft');
             }
           });
 
@@ -150,30 +161,42 @@
         if (c) c.textContent = roundHits + '/' + perRound;
       }
 
-      function finishRound() {
+      function newRound() {
+        hits = 0;
+        roundHits = 0;
+        running = true;
+        updateCount();
+        fillBoard();
+      }
+
+      function endRound() {
         running = false;
-        const last = host.round() >= host.roundsTotal();
-        if (last) {
-          host.prompt('Semua ronde selesai. Kerja bagus!', 'good');
+        host.prompt('Ronde ' + host.round() + ' selesai! Waktunya gerak sebentar.', 'good');
+        if (host.round() >= host.roundsTotal()) {
           host.complete();
           return;
         }
-        host.prompt('Ronde selesai! Waktunya gerak sebentar.', 'good');
         host.offerMovementBreak(12, function () {
-          running = true;
-          host.nextRoundOrFinish();
-          buildRound();
+          host.setRound(host.round() + 1);
+          newRound();
         });
       }
 
-      buildRound();
+      newRound();
       host.setSteps(game.steps, 1);
 
+      /* Game ini hanya bereaksi pada ketukan, jadi tidak ada timer yang bisa
+         menumpuk. Saat dibekukan, sisa kelas animasi dibersihkan supaya tidak
+         ada kotak yang tetap menyala saat anak kembali. */
       this._cleanup = function () { running = false; };
+      this._pause = function () {
+        UIx.$$('.gtile.is-miss', stage).forEach(function (t) { t.classList.remove('is-miss'); });
+      };
+      this._resume = function () {};
     },
 
-    pause: function () {},
-    resume: function () {},
+    pause: function () { if (this._pause) this._pause(); },
+    resume: function () { if (this._resume) this._resume(); },
     unmount: function () { if (this._cleanup) this._cleanup(); }
   });
 })(window);

@@ -196,7 +196,7 @@ tampilan anak.
 
 | Game | Tugas kognitif | Keputusan adaptasi ADHD |
 |---|---|---|
-| **Lampu Fokus** | Atensi berkelanjutan & selektif | Hanya satu target per putaran; pengganggu bergerak pelan (bukan berkedip) untuk menghindari overstimulasi; empat temuan benar per ronde lalu jeda |
+| **Lampu Fokus** | Atensi berkelanjutan & selektif | Contoh target **tetap** sepanjang papan (tidak berubah di tengah) supaya tidak ada kotak yang mendadak tidak cocok; 3–4 kotak cocok per papan dan papan diisi ulang otomatis agar selalu ada jawaban benar; pengganggu bergerak pelan (bukan berkedip) untuk menghindari overstimulasi |
 | **Ingat Urutan** | Memori kerja visual-spasial | Urutan hanya 3 → 5 langkah (tidak pernah 8–9); tersedia "Lihat lagi" 2× per ronde; titik penanda mengurangi beban mengingat posisi |
 | **Tahan Dulu!** | Inhibisi respons (Go–No-Go) | Rasio ramah 4 boleh : 1 tahan di ronde pertama; jendela respons 1,2–1,5 detik (bukan tembak cepat); bom yang berhasil ditahan justru diberi pujian sebagai keberhasilan inti |
 | **Napas Warna** | Regulasi diri | Tanpa target napas, tanpa penilaian; tombol "Sudah cukup, selesai" selalu tersedia; hitungan napas tampil agar anak tahu kapan selesai |
@@ -207,8 +207,10 @@ tampilan anak.
 
 ## 5. Bug nyata yang ditemukan saat pengujian
 
-Harness `tools/smoke.mjs` menjalankan aplikasi dengan DOM tiruan. Selain 107 pemeriksaan yang lulus,
-ia menemukan bug yang tidak terlihat dari sekadar membaca kode:
+### 5.1 Putaran pertama — ditemukan oleh harness uji
+
+Harness `tools/smoke.mjs` menjalankan aplikasi dengan DOM tiruan. Ia menemukan bug yang tidak terlihat
+dari sekadar membaca kode:
 
 1. **Jeda gerak mematikan sesi.** `App.go()` mengakhiri sesi setiap kali meninggalkan layar game —
    termasuk saat mengunjungi layar jeda gerak. Akibatnya, setiap jeda antar ronde menghentikan sesi
@@ -224,7 +226,64 @@ ia menemukan bug yang tidak terlihat dari sekadar membaca kode:
 6. **`this` tidak stabil di attention.js.** `host.setSteps(this.steps, …)` bergantung pada konteks
    pemanggilan; kini memakai referensi `game` yang tetap.
 
-Semuanya lolos verifikasi setelah perbaikan: **107 pemeriksaan lulus, 0 galat runtime.**
+### 5.2 Putaran kedua — dilaporkan setelah dipakai di peramban sungguhan
+
+Dua keluhan datang dari pemakaian nyata. Keduanya terkonfirmasi sebagai bug asli dan sudah diperbaiki.
+Catatan penting: kode yang terbit di `ayofokus.netlify.app` **identik** dengan kode lokal, jadi ini
+bukan masalah versi lama yang masih ter-deploy.
+
+**A. "Lampu Fokus kadang tidak ada pilihan yang benar."**
+
+Dua penyebab yang saling memperkuat:
+
+1. Satu ronde membutuhkan **4 temuan benar**, tetapi setiap papan hanya melahirkan **2–3 kotak cocok**.
+   Setelah semuanya diketuk, papan **tidak pernah diisi ulang** — anak buntu menatap papan yang tidak
+   punya jawaban benar, dan ronde tidak pernah selesai.
+2. `newTarget()` dipanggil setiap kali anak menekan jawaban benar, sehingga **contoh target berubah**
+   sementara kotak lama masih terlihat. Kotak yang tadinya cocok menjadi tidak cocok lagi. Inilah gejala
+   "tidak ada pilihan yang benar" yang persis dirasakan pengguna.
+
+Perbaikan: contoh target **tidak lagi berubah di tengah papan**; setiap papan melahirkan **3–4 kotak
+cocok**; dan papan **otomatis diisi ulang** begitu kotak cocok habis, sehingga selalu ada jawaban benar.
+
+**B. "Saat diterbitkan, kadang berjalan sendiri tanpa disentuh."**
+
+Penyebabnya perilaku peramban terhadap tab yang tidak terlihat:
+
+1. Peramban **menahan timer** di tab tersembunyi lalu **menjalankannya sekaligus** ketika tab kembali
+   aktif. Pada game berbasis waktu ("Tahan Dulu!", "Napas Warna"), ledakan itu melewati beberapa isyarat
+   sekaligus, menutup ronde, bahkan bisa **menyelesaikan sesi tanpa satu pun ketukan**.
+2. Jam sesi **tetap berjalan selama jeda gerak** dan selama anak keluar sejenak, sehingga waktu bermain
+   habis lebih cepat daripada yang terlihat.
+
+Perbaikan:
+- **Pembekuan menyeluruh.** Saat tab disembunyikan atau jendela kehilangan fokus, jam sesi dibekukan
+  **dan** seluruh timer di dalam game dibatalkan. Ketika anak kembali, dialog *"Lanjut main?"* muncul dan
+  waktu **tidak** berjalan sampai ia menekan Lanjut.
+- Setiap game memakai **penjadwalan sadar-jeda**: durasi timer disimpan, lalu dilanjutkan dengan sisa
+  waktunya. Timer tidak pernah menumpuk.
+- **Jam sesi dibekukan selama jeda gerak**, jadi waktu istirahat tidak memakan jatah bermain anak.
+- Bug pendukung: `App.init()` memakai variabel `self` yang **tidak pernah dideklarasikan**, sehingga
+  `self` menunjuk `window` dan callback pembekuan tidak pernah berjalan sama sekali. Ini juga contoh
+  bug yang hanya muncul pada kode nyata, bukan pada pembacaan sekilas.
+
+Uji regresi ditambahkan untuk keduanya (bagian 11 dan 12 di `tools/smoke.mjs`): memastikan papan Lampu
+Fokus tidak pernah buntu dan setiap kotak "cocok" benar-benar menampilkan contohnya, serta memastikan
+jam sesi tidak berkurang selama tab disembunyikan dan tidak melompat saat dilanjutkan.
+
+**Total setelah kedua putaran: 142 pemeriksaan lulus, 0 galat runtime.**
+
+### 5.3 Catatan: dua bug pada harness uji itu sendiri
+
+Harness juga sempat menyesatkan, dan perbaikannya penting agar hasil uji bisa dipercaya:
+
+1. `textContent` pada DOM tiruan membuang anak simpul **tanpa melepas `parentNode`**, sehingga lahir
+   simpul yatim yang tidak terlihat `querySelectorAll`.
+2. `getElementById` mengembalikan elemen **pertama yang pernah dibuat**, bukan yang sedang aktif di
+   dokumen. Karena setiap game dibangun ulang saat dimainkan, uji bisa memeriksa papan dari mount lama.
+
+Keduanya sempat membuat uji regresi melaporkan "papan kosong" padahal papannya benar — pengingat bahwa
+alat uji juga perlu diuji.
 
 ---
 

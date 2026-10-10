@@ -29,6 +29,10 @@
     tokenAwarded: 0,
     _tick: null,
     _lastTs: 0,
+    frozen: false,
+    frozenPaused: false,
+    onFreeze: null,
+    onThaw: null,
     shared: {},
     onGameEnd: null,
 
@@ -49,9 +53,27 @@
         stepNowText: document.getElementById('stepNowText')
       };
       const self = this;
+      /* ── Tab disembunyikan / ponsel dikunci ──
+         Peramban MENAHAN timer saat tab tidak terlihat, lalu menjalankannya
+         sekaligus dalam satu ledakan ketika tab kembali aktif. Akibatnya
+         game tampak "berjalan sendiri tanpa disentuh": isyarat dilompati,
+         ronde ditutup, bahkan sesi bisa selesai dengan sendirinya.
+
+         Solusinya: bekukan jam sesi DAN seluruh timer di dalam game selama
+         tab tidak terlihat, lalu mulai lagi dengan jendela waktu yang utuh. */
       document.addEventListener('visibilitychange', function () {
-        if (document.hidden && self.running && !self.paused) self.pause(true);
+        if (document.hidden) self.freeze('hidden');
+        else self.thaw();
       });
+      /* sebagian peramban memicu blur/focus alih-alih visibilitychange */
+      if (typeof global.addEventListener === 'function') {
+        global.addEventListener('blur', function () {
+          if (!document.hidden) self.freeze('blur');
+        });
+        global.addEventListener('focus', function () {
+          if (!document.hidden) self.thaw();
+        });
+      }
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
           if (UIx.isOverlayOpen()) { UIx.closeOverlay(); }
@@ -59,6 +81,49 @@
         }
       });
       return this;
+    },
+
+    /* ── pembekuan dan pelanjutan ── */
+    freeze: function (why) {
+      if (this.frozen || !this.running || this.ended) return;
+      this.frozen = true;
+      this.frozenPaused = this.paused;
+      this.paused = true;                       // step() berhenti menambah waktu
+      try { if (this.game && this.game.pause) this.game.pause(); } catch (e) {}
+      if (typeof this.onFreeze === 'function') { try { this.onFreeze(why); } catch (e) {} }
+    },
+
+    thaw: function () {
+      if (!this.frozen) return;
+      this.frozen = false;
+      const wasPaused = this.frozenPaused;
+      this.frozenPaused = false;
+      this._lastTs = performance.now();          // jangan hitung waktu yang hilang
+      if (this.ended || !this.running) return;
+
+      if (wasPaused) {
+        /* Anak sudah menjeda sendiri: cukup tampilkan kembali layar jeda. */
+        this.paused = true;
+        if (typeof this.onThaw === 'function') { try { this.onThaw(true); } catch (e) {} }
+        return;
+      }
+
+      /* Anak sedang bermain lalu tab disembunyikan. Jam tetap DIBEKUKAN
+         sampai anak menekan "Lanjut" — supaya waktu tidak berjalan sementara
+         ia masih membaca dialog. Inilah yang dulu tampak seperti game
+         berjalan sendiri setelah tab kembali aktif. */
+      this.paused = true;
+      this.syncPauseButton();
+      if (typeof this.onThaw === 'function') { try { this.onThaw(false); } catch (e) {} }
+    },
+
+    /* Menyamakan tampilan tombol Jeda dengan keadaan sebenarnya. */
+    syncPauseButton: function () {
+      const btn = document.getElementById('btnStagePause');
+      if (!btn) return;
+      const p = !!this.paused;
+      btn.setAttribute('aria-pressed', String(p));
+      btn.innerHTML = p ? '<span aria-hidden="true">▶️</span> Lanjut' : '<span aria-hidden="true">⏸️</span> Jeda';
     },
 
     /* ── penjadwalan timer ──
@@ -233,6 +298,8 @@
         } catch (e2) { /* jangan biarkan penangan galat ikut gagal */ }
       }
 
+      this.frozen = false;
+      this.frozenPaused = false;
       this.schedule(secs);
       global.Sound.play('open');
     },
@@ -260,6 +327,8 @@
     resume: function () {
       if (!this.running || this.ended) return;
       this.paused = false;
+      this.frozen = false;
+      this.frozenPaused = false;
       this._lastTs = performance.now();
       try { if (this.game && this.game.resume) this.game.resume(); } catch (e) {}
       const btnPause = document.getElementById('btnStagePause');

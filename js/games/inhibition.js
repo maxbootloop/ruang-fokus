@@ -49,7 +49,8 @@
       let current = null;          // { isBomb, shownAt, timer }
       let gapTimer = null;
       let paused = false;
-      let holdUntil = 0;           // saat jeda, jendela respons ditunda
+      let pauseStartedAt = 0;      // untuk menghitung sisa jendela respons saat dilanjutkan
+      let gapLeft = 0;             // sisa jeda antar isyarat saat dibekukan
 
       const hint = el('div', { class: 'gbar__hint', text: 'Bersiap…' });
       const stat = el('div', { class: 'gbar__stat' }, [
@@ -88,7 +89,7 @@
 
       function nextCue() {
         if (!running) return;
-        if (paused) { gapTimer = global.setTimeout(nextCue, 300); return; }
+        if (paused) return;                     // dilanjutkan lewat resumeTimers()
         if (inRound >= perRound) { endRound(); return; }
         inRound++;
         updateStats();
@@ -112,9 +113,10 @@
 
         /* jendela respons: bintang lebih lama supaya anak tidak frustrasi */
         const window = isBomb ? 1200 : 1500;
-        var expire = function () {
+        current.window = window;
+        current.expire = function () {
           if (!running || !current || current.done) return;
-          if (paused) { global.setTimeout(expire, 300); return; }
+          if (paused) return;                    // menunggu dilanjutkan
           current.done = true;
           if (current.isBomb) {
             /* berhasil menahan diri — ini inti latihannya */
@@ -128,9 +130,37 @@
           }
           face('👀');
           updateStats();
-          gapTimer = global.setTimeout(nextCue, 380);
+          scheduleCue(380);
         };
-        current.timer = global.setTimeout(expire, window);
+        current.timer = global.setTimeout(current.expire, window);
+      }
+
+      /* Penjadwalan isyarat berikutnya yang sadar-jeda: durasinya disimpan
+         agar tidak hilang saat tab disembunyikan atau anak menekan Jeda. */
+      function scheduleCue(ms) {
+        gapLeft = ms;
+        gapTimer = global.setTimeout(function () {
+          gapLeft = 0;
+          nextCue();
+        }, ms);
+      }
+
+      function pauseTimers() {
+        pauseStartedAt = performance.now();
+        global.clearTimeout(gapTimer);
+        gapTimer = null;
+        if (current && current.timer) { global.clearTimeout(current.timer); current.timer = null; }
+      }
+
+      function resumeTimers() {
+        if (!running) return;
+        if (current && !current.done) {
+          const left = Math.max(150, (current.window || 1200) - (pauseStartedAt - current.shownAt));
+          current.shownAt = performance.now();
+          current.timer = global.setTimeout(current.expire, left);
+        } else {
+          scheduleCue(Math.max(250, gapLeft || 380));
+        }
       }
 
       function endRound() {
@@ -155,12 +185,13 @@
             'Napas panjang sekali kalau tanganmu hampir menekan bom.'
           ], 1);
           updateStats();
-          gapTimer = global.setTimeout(nextCue, 700);
+          scheduleCue(700);
         });
       }
 
       function tap() {
         if (!running) return;
+        if (paused) return;
         if (!current || current.done) {
           host.prompt('Tunggu isyaratnya muncul dulu, ya.', 'soft');
           return;
@@ -183,7 +214,7 @@
         }
         face('👀');
         updateStats();
-        gapTimer = global.setTimeout(nextCue, 380);
+        scheduleCue(380);
       }
 
       btn.addEventListener('click', tap);
@@ -194,18 +225,32 @@
 
       updateStats();
       host.setSteps(this.steps, 1);
-      gapTimer = global.setTimeout(nextCue, 900);
+      scheduleCue(900);
 
-      this._cleanup = function () {
+      const cleanup = function () {
         running = false;
         global.clearTimeout(gapTimer);
         if (current && current.timer) global.clearTimeout(current.timer);
         document.removeEventListener('keydown', keyHandler);
       };
+      this._cleanup = cleanup;
+
+      /* dipanggil oleh Session saat tab disembunyikan, dijeda, atau ada jeda gerak.
+         Semua timer dibatalkan supaya tidak menumpuk lalu meledak sekaligus. */
+      this._pause = function () {
+        if (paused) return;
+        paused = true;
+        pauseTimers();
+      };
+      this._resume = function () {
+        if (!paused) return;
+        paused = false;
+        resumeTimers();
+      };
     },
 
-    pause: function () { this._paused = true; },
-    resume: function () { this._paused = false; },
+    pause: function () { if (this._pause) this._pause(); },
+    resume: function () { if (this._resume) this._resume(); },
     unmount: function () { if (this._cleanup) this._cleanup(); }
   });
 })(window);

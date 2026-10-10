@@ -52,9 +52,19 @@ class El {
     if (this.children.length) return this.children.map(c => c.textContent).join('');
     return this._text;
   }
-  set textContent(v) { this.children = []; this._text = v == null ? '' : String(v); }
+  /* Menyetel textContent pada DOM sungguhan membuang seluruh anak.
+     Harness harus melepas parentNode mereka juga, kalau tidak akan lahir
+     simpul yatim yang tidak terlihat querySelectorAll. */
+  set textContent(v) {
+    this.children.forEach(c => { c.parentNode = null; });
+    this.children = [];
+    this._text = v == null ? '' : String(v);
+  }
   get innerHTML() { return this._html || ''; }
-  set innerHTML(v) { this._html = String(v); this.children = []; this._text = ''; }
+  set innerHTML(v) {
+    this.children.forEach(c => { c.parentNode = null; });
+    this._html = String(v); this.children = []; this._text = '';
+  }
   appendChild(c) { if (!c) return c; c.parentNode = this; this.children.push(c); return c; }
   removeChild(c) { const i = this.children.indexOf(c); if (i >= 0) this.children.splice(i, 1); c.parentNode = null; return c; }
   insertBefore(c, ref) {
@@ -112,7 +122,24 @@ const document = {
   createTextNode: t => { const e = new El('#text'); e._text = String(t); return e; },
   querySelector: sel => query(sel, document.body),
   querySelectorAll: sel => queryAll(sel, document.body),
-  getElementById: id => ELEMENTS.find(e => e.id === id) || null,
+  getElementById(id) {
+    /* Tiruan DOM: beberapa simpul bisa berbagi id karena game dibangun ulang
+       pada setiap mount. getElementById di peramban mengembalikan elemen
+       PERTAMA dalam urutan dokumen — jadi utamakan yang benar-benar
+       terhubung ke pohon, agar tidak mengambil sisa mount sebelumnya. */
+    let fallback = null;
+    for (let i = ELEMENTS.length - 1; i >= 0; i--) {
+      const e = ELEMENTS[i];
+      if (e.id !== id) continue;
+      fallback = fallback || e;
+      let n = e, depth = 0;
+      while (n && depth++ < 40) {
+        if (n === document.body || n === document.documentElement) return e;
+        n = n.parentNode;
+      }
+    }
+    return fallback;
+  },
   addEventListener(t, fn) { (this._l || (this._l = {}))[t] = (this._l[t] || []).concat(fn); },
   removeEventListener() {},
   dispatch(t, ev) { (this._l && this._l[t] || []).slice().forEach(fn => fn(Object.assign({ type: t, preventDefault() {} }, ev))); },
@@ -614,7 +641,109 @@ check('Tautan footer kembali ke panduan',
   $('footerRepoLink').href === 'https://docs.github.com/pages', $('footerRepoLink').href);
 check('Footer punya tautan lisensi', !!document.querySelector('.footer__repo'));
 
-console.log('\n── 10. Ringkasan galat runtime ──');
+console.log('\n── 11. Regresi: Lampu Fokus selalu punya jawaban benar ──');
+{
+  const game = sandbox.Games.filter(g => g.id === 'lampu-fokus')[0];
+  App.current = game;
+  App.playCurrent();
+  const body = $('stageBody');
+  const targetBox = $('lfTarget');
+  const tilesIn = () => queryAll('button', body).filter(b => b.dataset.t !== undefined);
+  const targets = () => tilesIn().filter(b => b.dataset.t === '1');
+  const readTarget = () => (targetBox.textContent || '').trim();
+
+  check('Papan awal terisi', tilesIn().length > 0, tilesIn().length + ' kotak');
+  check('Ada kotak yang cocok di papan awal', targets().length >= 1, targets().length + ' kotak cocok');
+
+  /* Semua kotak yang ditandai cocok harus benar-benar menampilkan contoh itu */
+  const t0 = readTarget();
+  const mismatch = targets().filter(b => (b.textContent || '').trim() !== t0);
+  check('Setiap kotak "cocok" tampilannya sama dengan contoh', mismatch.length === 0,
+    mismatch.length + ' kotak tidak cocok dengan contoh "' + t0 + '"');
+
+  /* Tekan kotak cocok sampai ronde selesai; papan harus diisi ulang,
+     tidak boleh buntu tanpa jawaban benar. */
+  let clicks = 0, boards = 1, stuck = 0, seen = new Set();
+  while (clicks < 40 && !Session.ended && App.screen === 'stage') {
+    const ts = targets();
+    if (!ts.length) { stuck++; break; }
+    ts[0].click();
+    clicks++;
+    advance(60);
+    if (App.screen === 'break') {
+      /* jeda antar ronde: selesaikan lalu lanjut */
+      advance(16000);
+      const b = $('btnBreakDone');
+      if (b) b.click();
+      advance(200);
+      boards++;
+      continue;
+    }
+    if (Session.ended || App.screen !== 'stage') break;
+    const now = targets();
+    if (!now.length && !Session.ended) { stuck++; break; }
+    const t = readTarget();
+    if (!seen.has(t)) { seen.add(t); boards++; }
+  }
+  check('Papan tidak pernah kehabisan jawaban benar', stuck === 0, stuck ? stuck + ' kali buntu' : 'tidak pernah buntu');
+  check('Kemajuan ronde tercapai lewat kotak cocok saja', clicks >= 1, clicks + ' ketukan benar');
+  if (!Session.ended) Session.finish('time');
+  App.go('home');
+  advance(60);
+}
+
+console.log('\n── 12. Regresi: tidak berjalan sendiri saat tab disembunyikan ──');
+{
+  const game = sandbox.Games.filter(g => g.id === 'tahan-dulu')[0];
+  App.current = game;
+  App.playCurrent();
+  advance(1500);
+  check('Sesi mulai berjalan', Session.running === true && Session.ended === false);
+
+  const before = Session.remaining;
+  /* sembunyikan tab selama 30 detik waktu nyata */
+  document.hidden = true;
+  document.dispatch('visibilitychange', {});
+  check('Sesi dibekukan saat tab disembunyikan', Session.frozen === true && Session.paused === true);
+  advance(30000);
+  check('Jam sesi tidak berkurang selama disembunyikan', Math.abs(Session.remaining - before) < 0.001,
+    'sebelum ' + before.toFixed(1) + 's, sesudah ' + Session.remaining.toFixed(1) + 's');
+  check('Sesi tidak berakhir sendiri selama disembunyikan', Session.ended === false);
+
+  /* kembali terlihat */
+  document.hidden = false;
+  document.dispatch('visibilitychange', {});
+  check('Ajakan melanjutkan muncul saat kembali', sandbox.UI.isOverlayOpen() === true);
+  check('Sesi belum dilanjutkan sebelum anak menekan Lanjut', Session.paused === true);
+  check('Judul dialog adalah ajakan melanjutkan',
+    /lanjut/i.test($('ovTitle').textContent || ''), '"' + $('ovTitle').textContent + '"');
+
+  $('ovActions').children[0].click();
+  advance(600);
+  check('Setelah menekan Lanjut sesi berjalan lagi', Session.paused === false && Session.running === true);
+  check('Waktu tidak melompat saat dilanjutkan', Session.remaining <= before + 1,
+    'sisa ' + Session.remaining.toFixed(1) + 's (sebelum jeda ' + before.toFixed(1) + 's)');
+
+  /* jeda gerak tidak boleh memakan jatah waktu bermain */
+  const beforeBreak = Session.remaining;
+  App.showBreak(10, function () {});
+  advance(500);
+  check('Jam sesi dibekukan selama jeda gerak', Session.paused === true);
+  advance(12000);
+  check('Jam sesi tetap utuh selama jeda gerak', Math.abs(Session.remaining - beforeBreak) < 0.001,
+    'selisih ' + (beforeBreak - Session.remaining).toFixed(2) + 's');
+  check('Hitungan jeda ikut membeku lalu selesai', Number($('breakCount').textContent) <= 1,
+    'hitungan ' + $('breakCount').textContent);
+  $('btnBreakDone').click();
+  advance(400);
+  check('Jam sesi lanjut setelah jeda gerak selesai', Session.paused === false && Session.running === true);
+
+  Session.finish('child');
+  App.go('home');
+  advance(80);
+}
+
+console.log('\n── 13. Ringkasan galat runtime ──');
 if (errors.length) { errors.slice(0, 12).forEach(e => console.log('  ! ' + e)); }
 check('Tidak ada galat runtime sepanjang uji', errors.length === 0, errors.length + ' galat');
 

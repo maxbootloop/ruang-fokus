@@ -61,6 +61,7 @@
 
     /* ═══════════ INIT ═══════════ */
     init: function () {
+      const self = this;              // WAJIB: tanpa ini `self` menunjuk window
       const s = Store.get().settings;
       Session.init();
       Sound.setEnabled(s.sound);
@@ -89,9 +90,32 @@
       document.addEventListener('pointerdown', unlock);
       document.addEventListener('keydown', unlock);
 
+      /* Ketika anak kembali ke tab, jangan langsung melemparnya ke dalam
+         game yang sudah berjalan — tampilkan ajakan melanjutkan dulu. */
+      Session.onFreeze = function () { self._returnPending = false; };
+      Session.onThaw = function (wasPaused) {
+        if (self.screen !== 'stage' || wasPaused) return;
+        self.showResume();
+      };
+
       this.go('home');
       this.debugHash();
       this.renderRepo();
+    },
+
+    /* Ajakan melanjutkan setelah tab kembali aktif. Waktu permainan sudah
+       dibekukan, jadi tidak ada yang hilang selama anak pergi. */
+    showResume: function () {
+      const self = this;
+      UIx.overlay({
+        title: 'Lanjut main?',
+        html: '<p>Kamu kembali. Waktunya masih utuh — tidak ada yang hilang.</p>' +
+              '<p><b>Tekan "Lanjut" kalau sudah siap.</b></p>',
+        actions: [
+          { label: 'Lanjut', primary: true, action: function () { UIx.closeOverlay(); Session.resume(); } },
+          { label: 'Selesai sekarang', action: function () { UIx.closeOverlay(); Session.finish('child'); } }
+        ]
+      });
     },
 
     /* Pintasan uji/verifikasi: buka #game=lampu-fokus, #screen=grownup,
@@ -746,6 +770,26 @@
 
     /* ═══════════ JEDA GERAK ═══════════ */
     _breakDone: null,
+    _breakLeft: 0,
+    _breakTotal: 0,
+    _breakTick: 0,
+    _breakPrevPaused: false,
+    _returnPending: false,
+
+    /* Tulisan pada layar jeda, dipisah agar bisa diperbarui dari penanda waktu
+       tanpa membangun ulang simpul DOM. */
+    paintBreak: function () {
+      const left = Math.max(0, this._breakLeft);
+      const cnt = document.getElementById('breakCount');
+      const art = document.getElementById('breakArt');
+      const txt = document.getElementById('breakText');
+      if (cnt) cnt.textContent = left;
+      if (left <= 0) {
+        if (art) art.textContent = '✅';
+        if (txt) txt.innerHTML = '<b>Bagus! Badan sudah segar.</b><br>Tekan tombol di bawah untuk lanjut.';
+      }
+    },
+
     showBreak: function (seconds, done) {
       const self = this;
       this._breakDone = done || null;
@@ -763,34 +807,54 @@
 
       const art = document.getElementById('breakArt');
       const txt = document.getElementById('breakText');
-      const cnt = document.getElementById('breakCount');
       if (art) art.textContent = list[0].ico;
       if (txt) txt.innerHTML = list.map(function (m) { return '<b>' + m.ico + ' ' + m.t + '</b>'; }).join('<br>');
-      if (cnt) cnt.textContent = seconds;
+
+      /* Waktu jeda gerak TIDAK boleh memakan jatah waktu bermain anak.
+         Jam sesi dibekukan selama jeda, lalu dilanjutkan tanpa lompatan. */
+      this._breakPrevPaused = !!(Session.running && Session.paused);
+      if (Session.running && !Session.ended && !Session.paused) Session.pause(true);
+
+      this._breakTotal = seconds;
+      this._breakLeft = seconds;
+      this._breakTick = performance.now();
+      this.paintBreak();
 
       this.go('break', { keepSession: true });
       Sound.play('break');
       global.clearInterval(this._breakTimer);
-      let left = seconds;
       this._breakTimer = global.setInterval(function () {
-        left--;
-        if (cnt) cnt.textContent = Math.max(0, left);
-        if (left <= 0) {
+        /* Ikuti jam asli, bukan jumlah detak: detak browser di tab
+           tersembunyi ditahan lalu menumpuk, sehingga hitungan bisa
+           melompat atau tampak berjalan sendiri. */
+        const now = performance.now();
+        const dt = (now - self._breakTick) / 1000;
+        self._breakTick = now;
+        if (dt <= 0 || dt > 5) return;
+        if (self._breakLeft <= 0) return;
+        self._breakLeft -= dt;
+        if (self._breakLeft <= 0) {
+          self._breakLeft = 0;
           global.clearInterval(self._breakTimer);
           self._breakTimer = null;
-          if (art) art.textContent = '✅';
-          if (txt) txt.innerHTML = '<b>Bagus! Badan sudah segar.</b><br>Tekan tombol di bawah untuk lanjut.';
           Sound.play('select');
         }
-      }, 1000);
+        self.paintBreak();
+      }, 250);
     },
 
     endBreak: function (skipped) {
       global.clearInterval(this._breakTimer);
       this._breakTimer = null;
+      this._breakLeft = 0;
       const cb = this._breakDone;
       this._breakDone = null;
       if (!skipped) Store.bump('break');
+      /* lanjutkan jam sesi hanya bila sebelumnya memang berjalan */
+      if (Session.running && !Session.ended && !this._breakPrevPaused) {
+        if (Session.frozen) Session.thaw();
+        else Session.resume();
+      }
       if (cb) { cb(); return; }
       this.go('home');
     },

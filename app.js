@@ -138,6 +138,7 @@
       if (params.screen === 'steps') this.renderTasks();
       if (params.screen === 'grownup') this.openGrownup();
       if (params.screen === 'progress') this.renderProgress();
+      if (params.screen === 'break') { this.showBreak(20, function () {}); return; }
       if (params.screen) this.go(params.screen);
     },
 
@@ -775,15 +776,17 @@
     _breakTick: 0,
     _breakPrevPaused: false,
     _returnPending: false,
+    _endingBreak: false,
+    _breakFrom: 'home',
 
-    /* Tulisan pada layar jeda, dipisah agar bisa diperbarui dari penanda waktu
-       tanpa membangun ulang simpul DOM. */
+    /* Tulisan pada layar jeda. Hitungan selalu bilangan bulat — angka desimal
+       membingungkan anak dan membuat layar terlihat "rusak". */
     paintBreak: function () {
-      const left = Math.max(0, this._breakLeft);
+      const left = Math.max(0, Math.ceil(this._breakLeft));
       const cnt = document.getElementById('breakCount');
       const art = document.getElementById('breakArt');
       const txt = document.getElementById('breakText');
-      if (cnt) cnt.textContent = left;
+      if (cnt) cnt.textContent = String(left);
       if (left <= 0) {
         if (art) art.textContent = '✅';
         if (txt) txt.innerHTML = '<b>Bagus! Badan sudah segar.</b><br>Tekan tombol di bawah untuk lanjut.';
@@ -820,6 +823,10 @@
       this._breakTick = performance.now();
       this.paintBreak();
 
+      /* Ingat asal layar agar bisa dikembalikan dengan tepat:
+         dari dalam game kembali ke panggung, dari beranda kembali ke beranda. */
+      if (this.screen !== 'break') this._breakFrom = this.screen;
+
       this.go('break', { keepSession: true });
       Sound.play('break');
       global.clearInterval(this._breakTimer);
@@ -844,19 +851,33 @@
     },
 
     endBreak: function (skipped) {
+      /* Tahan agar satu ketukan tidak diproses dua kali (ketukan ganda atau
+         sentuhan yang terdaftar dua kali pada layar sentuh). */
+      if (this._endingBreak) return;
+      this._endingBreak = true;
+
       global.clearInterval(this._breakTimer);
       this._breakTimer = null;
       this._breakLeft = 0;
       const cb = this._breakDone;
       this._breakDone = null;
       if (!skipped) Store.bump('break');
-      /* lanjutkan jam sesi hanya bila sebelumnya memang berjalan */
-      if (Session.running && !Session.ended && !this._breakPrevPaused) {
-        if (Session.frozen) Session.thaw();
-        else Session.resume();
+
+      /* Lanjutkan jam sesi hanya bila sebelumnya memang berjalan. */
+      if (Session.running && !Session.ended && !this._breakPrevPaused) Session.resumeClock();
+
+      /* Layar jeda HARUS selalu ditutup. Dulu fungsi ini berhenti lebih awal
+         ketika ada callback, sehingga tugas berikutnya sudah berjalan
+         (bahkan sudah bersuara) sementara layar jeda masih menutupi layar —
+         tombolnya pun terasa tidak merespons. */
+      if (this.screen === 'break') {
+        const back = this._breakFrom === 'break' ? (Session.running ? 'stage' : 'home') : this._breakFrom;
+        this.go(back, { keepSession: true });
       }
+
+      this._endingBreak = false;
       if (cb) { cb(); return; }
-      this.go('home');
+      if (!Session.running && this.screen === 'stage') this.go('home');
     },
 
     /* ═══════════ SELESAI SESI ═══════════ */

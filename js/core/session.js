@@ -53,27 +53,23 @@
         stepNowText: document.getElementById('stepNowText')
       };
       const self = this;
-      /* ── Tab disembunyikan / ponsel dikunci ──
+      /* Tab disembunyikan / ponsel dikunci ──
          Peramban MENAHAN timer saat tab tidak terlihat, lalu menjalankannya
          sekaligus dalam satu ledakan ketika tab kembali aktif. Akibatnya
          game tampak "berjalan sendiri tanpa disentuh": isyarat dilompati,
          ronde ditutup, bahkan sesi bisa selesai dengan sendirinya.
 
          Solusinya: bekukan jam sesi DAN seluruh timer di dalam game selama
-         tab tidak terlihat, lalu mulai lagi dengan jendela waktu yang utuh. */
+         tab tidak terlihat, lalu mulai lagi dengan jendela waktu yang utuh.
+
+         Sengaja HANYA memakai visibilitychange. Sebelumnya blur/focus ikut
+         dipakai, dan itu keliru: menekan tombol di dalam halaman dapat
+         memicu blur/focus, sehingga sesi terasa terhenti sendiri dan
+         tombol tidak merespons. */
       document.addEventListener('visibilitychange', function () {
         if (document.hidden) self.freeze('hidden');
         else self.thaw();
       });
-      /* sebagian peramban memicu blur/focus alih-alih visibilitychange */
-      if (typeof global.addEventListener === 'function') {
-        global.addEventListener('blur', function () {
-          if (!document.hidden) self.freeze('blur');
-        });
-        global.addEventListener('focus', function () {
-          if (!document.hidden) self.thaw();
-        });
-      }
       document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
           if (UIx.isOverlayOpen()) { UIx.closeOverlay(); }
@@ -124,6 +120,19 @@
       const p = !!this.paused;
       btn.setAttribute('aria-pressed', String(p));
       btn.innerHTML = p ? '<span aria-hidden="true">▶️</span> Lanjut' : '<span aria-hidden="true">⏸️</span> Jeda';
+    },
+
+    /* Melanjutkan jam sesi tanpa syarat. Dipakai setelah jeda gerak, di mana
+       sesi mungkin sedang dibekukan (tab disembunyikan) atau dijeda biasa.
+       Berbeda dengan resume(), fungsi ini tidak menyentuh dialog apa pun. */
+    resumeClock: function () {
+      if (!this.running || this.ended) return;
+      if (this.frozenPaused) return;   // anak menjeda sendiri: hormati pilihannya
+      this.frozen = false;
+      this.frozenPaused = false;
+      this.paused = false;
+      this._lastTs = performance.now();
+      this.syncPauseButton();
     },
 
     /* ── penjadwalan timer ──
@@ -380,7 +389,13 @@
         wrong: this.wrong,
         target: this.game.target || null,
         score: this.score,
-        completed: finishedAll && completion >= 0.999,
+        /* Tandai tuntas: 
+           - 'complete' berarti game memanggil complete() setelah rondenya
+             benar-benar habis. Ronde terakhir belum sempat dinaikkan, jadi
+             TIDAK boleh dihitung dari nomor ronde (dulu keliru menghasilkan
+             0,5 dan sesi ditandai belum tuntas).
+           - 'time' berarti waktu habis; baru dihitung dari ronde yang tercapai. */
+        completed: reason === 'complete' ? true : (finishedAll && completion >= 0.999),
         partial: !finishedAll,
         stoppedByChild: stoppedByChild,
         reason: reason

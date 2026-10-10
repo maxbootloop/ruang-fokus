@@ -244,6 +244,28 @@ sandbox.window = sandbox;
 sandbox.self = sandbox;
 sandbox.globalThis = sandbox;
 
+/* Pendengar kejadian tingkat jendela (blur, focus, resize).
+   Peramban sungguhan punya ini; tanpa tiruan, uji tidak bisa memeriksa
+   apakah kehilangan fokus jendela mengganggu jalannya sesi. */
+sandbox._winListeners = {};
+sandbox.addEventListener = function (type, fn) {
+  const k = String(type).toLowerCase();
+  (sandbox._winListeners[k] = sandbox._winListeners[k] || []).push(fn);
+};
+sandbox.removeEventListener = function (type, fn) {
+  const k = String(type).toLowerCase();
+  const list = sandbox._winListeners[k] || [];
+  const i = list.indexOf(fn);
+  if (i >= 0) list.splice(i, 1);
+};
+sandbox.dispatchEvent = function (type, ev) {
+  const k = String(type).toLowerCase();
+  (sandbox._winListeners[k] || []).slice().forEach(function (fn) {
+    try { fn(Object.assign({ type: k, preventDefault() {}, stopPropagation() {} }, ev)); }
+    catch (e) { errors.push('window ' + k + ': ' + e.message); }
+  });
+};
+
 /* Audio API tiruan: merekam panggilan */
 sandbox.AudioContext = function () {
   return {
@@ -743,7 +765,133 @@ console.log('\n── 12. Regresi: tidak berjalan sendiri saat tab disembunyikan
   advance(80);
 }
 
-console.log('\n── 13. Ringkasan galat runtime ──');
+console.log('\n── 13. Regresi: layar jeda gerak menutup dan tombolnya merespons ──');
+{
+  const game = sandbox.Games.filter(g => g.id === 'tahan-dulu')[0];
+  App.current = game;
+  App.playCurrent();
+  advance(600);
+  check('Sesi berjalan sebelum jeda', Session.running === true && Session.ended === false);
+
+  /* Jeda gerak dari dalam permainan (callback harus tetap membuat layar menutup) */
+  App.showBreak(8, function () { App._breakCallbackFired = true; });
+  advance(300);
+  check('Layar jeda tampil', App.screen === 'break', 'layar: ' + App.screen);
+  const firstCount = $('breakCount').textContent;
+  check('Hitungan jeda berupa bilangan bulat', /^\d+$/.test(firstCount), '"' + firstCount + '"');
+
+  advance(1200);
+  const midCount = $('breakCount').textContent;
+  check('Hitungan tetap bilangan bulat saat berjalan', /^\d+$/.test(midCount), '"' + midCount + '"');
+  check('Hitungan berkurang', Number(midCount) < Number(firstCount), firstCount + ' -> ' + midCount);
+
+  /* Tombol harus menutup layar jeda DAN menjalankan callback */
+  $('btnBreakDone').click();
+  advance(250);
+  check('Tombol "lanjut" menutup layar jeda', App.screen !== 'break', 'layar: ' + App.screen);
+  check('Layar kembali ke panggung game', App.screen === 'stage', 'layar: ' + App.screen);
+  check('Callback jeda tetap dijalankan', App._breakCallbackFired === true);
+  check('Jam sesi berjalan lagi setelah jeda', Session.paused === false && Session.running === true,
+    'paused=' + Session.paused + ' frozen=' + Session.frozen);
+  check('Isi game masih ada setelah jeda', $('stageBody').children.length > 0);
+
+  /* Ketukan ganda tidak boleh membuat kacau */
+  App.showBreak(5, function () {});
+  advance(200);
+  $('btnBreakDone').click();
+  $('btnBreakDone').click();
+  advance(250);
+  check('Ketukan ganda pada tombol jeda tetap aman', App.screen === 'stage' && Session.running === true,
+    'layar: ' + App.screen);
+
+  Session.finish('child');
+  App.go('home');
+  advance(80);
+
+  /* Jeda gerak mandiri dari beranda harus kembali ke beranda, bukan ke
+     panggung game yang kosong. */
+  App.go('home');
+  App.showBreak(5, function () {});
+  advance(200);
+  check('Jeda mandiri tampil dari beranda', App.screen === 'break');
+  $('btnBreakDone').click();
+  advance(200);
+  check('Jeda mandiri kembali ke beranda', App.screen === 'home', 'layar: ' + App.screen);
+  check('Tidak ada sesi yang ikut berjalan', Session.running === false);
+}
+
+console.log('\n── 14. Regresi: menekan tombol game tidak menimbulkan jeda palsu ──');
+{
+  /* Dulu blur/focus dipakai untuk membekukan sesi. Menekan tombol di dalam
+     halaman bisa memicunya, sehingga sesi terasa berhenti sendiri dan tombol
+     seperti tidak merespons. Sekarang hanya visibilitychange yang dipakai. */
+  const game = sandbox.Games.filter(g => g.id === 'lampu-fokus')[0];
+  App.current = game;
+  App.playCurrent();
+  advance(400);
+  const remainingBefore = Session.remaining;
+
+  /* Simulasi hilang fokus jendela TANPA tab disembunyikan */
+  sandbox.dispatchEvent && sandbox.dispatchEvent('blur', {});
+  advance(2000);
+  check('Kehilangan fokus jendela tidak menjeda sesi', Session.paused === false && Session.frozen === false,
+    'paused=' + Session.paused + ' frozen=' + Session.frozen);
+  check('Jam sesi tetap berjalan saat fokus hilang', Session.remaining < remainingBefore,
+    remainingBefore.toFixed(1) + 's -> ' + Session.remaining.toFixed(1) + 's');
+  check('Tidak ada dialog jeda palsu', sandbox.UI.isOverlayOpen() === false);
+
+  /* Menekan tombol game tetap berfungsi */
+  const tiles = queryAll('button', $('stageBody')).filter(b => b.dataset.t === '1');
+  check('Tombol game bisa ditekan', tiles.length > 0, tiles.length + ' kotak cocok');
+  if (tiles.length) {
+    tiles[0].click();
+    advance(150);
+    check('Menekan tombol tidak menimbulkan dialog jeda', sandbox.UI.isOverlayOpen() === false);
+    check('Menekan tombol tidak menghentikan sesi', Session.running === true && Session.paused === false);
+  }
+  Session.finish('child');
+  App.go('home');
+  advance(80);
+}
+
+console.log('\n── 15. Regresi: tombol "Sudah cukup, selesai" di Napas Warna ──');
+{
+  const game = sandbox.Games.filter(g => g.id === 'napas-warna')[0];
+  App.current = game;
+  App.playCurrent();
+  advance(200);
+  check('Napas Warna berjalan', Session.running === true && Session.game.id === 'napas-warna');
+
+  /* Tombol harus bekerja walau dipanggil saat sesi dibekukan */
+  document.hidden = true;
+  document.dispatch('visibilitychange', {});
+  advance(300);
+  check('Sesi dibekukan sebelum menekan tombol', Session.frozen === true);
+
+  const stopBtn = queryAll('button', $('stageBody')).filter(b => b.dataset.noautoclick === '1')[0];
+  check('Tombol "Sudah cukup, selesai" ada', !!stopBtn, stopBtn ? '"' + stopBtn.textContent + '"' : 'tidak ada');
+  stopBtn.click();
+  advance(300);
+  check('Menekan tombol mengakhiri sesi walau sedang dibekukan', Session.ended === true);
+  check('Layar ringkasan muncul', App.screen === 'done', 'layar: ' + App.screen);
+  const breathRec = Store.get().sessions[Store.get().sessions.length - 1];
+  /* Anak memilih menyudahi: itu keputusan yang sah dan dihargai, bukan
+     "gagal". Jadi dicatat sebagai selesai, dan tetap diberi bintang. */
+  check('Hasil tercatat sebagai sesi tuntas', !!breathRec && breathRec.completed === true,
+    breathRec ? 'completed=' + breathRec.completed + ' reason=' + breathRec.reason : 'tidak ada catatan');
+  check('Tidak dihitung sebagai berhenti karena menyerah', !!breathRec && breathRec.stoppedByChild !== true);
+  check('Anak tetap mendapat bintang', /⭐/.test($('doneStats').textContent || ''), '');
+
+  document.hidden = false;
+  document.dispatch('visibilitychange', {});
+  advance(200);
+  check('Kembali ke tab setelah selesai tidak mengganggu', App.screen === 'done' || App.screen === 'home',
+    'layar: ' + App.screen);
+  App.go('home');
+  advance(80);
+}
+
+console.log('\n── 16. Ringkasan galat runtime ──');
 if (errors.length) { errors.slice(0, 12).forEach(e => console.log('  ! ' + e)); }
 check('Tidak ada galat runtime sepanjang uji', errors.length === 0, errors.length + ' galat');
 

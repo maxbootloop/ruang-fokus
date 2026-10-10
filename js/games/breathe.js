@@ -37,10 +37,11 @@
 
     mount: function (stage, host) {
       let running = true;
+      let finished = false;      // anak sudah menekan "Sudah cukup, selesai"
       let phase = 'idle';
       let breath = 0;
 
-      const perRound = 4;
+      const perRound = 3;
       const inhale = host.round() >= 2 ? 4 : 4;
       const exhale = host.round() >= 2 ? 7 : 5;
 
@@ -54,10 +55,26 @@
       const pad = el('div', { class: 'gfield', style: { minHeight: '250px' } }, [orb]);
 
       const cta = el('div', { class: 'gcta' }, [
-        el('button', { class: 'btn btn--primary btn--lg', type: 'button', onClick: function () { begin(); } }, ['▶ Mulai bernapas']),
+        el('button', {
+          class: 'btn btn--primary btn--lg', type: 'button',
+          onClick: function () { if (!finished) begin(); }
+        }, ['▶ Mulai bernapas']),
         el('button', {
           class: 'btn btn--ghost btn--lg', type: 'button', dataset: { noautoclick: '1' },
-          onClick: function () { if (running) host.complete(); }
+          onClick: function () {
+            /* Umpan balik harus SEGERA. Sebelumnya hanya host.complete() yang
+               dipanggil; kalau sesi sedang dijeda atau dibekukan, tombol
+               tampak tidak berfungsi sama sekali. Sekarang: tandai selesai,
+               hentikan napas, perbarui tulisan, baru tutup sesi. */
+            if (finished) return;
+            finished = true;
+            running = false;
+            clearTimers();
+            label('Selesai');
+            hint.textContent = 'Latihan napas dihentikan. Terima kasih sudah mencoba.';
+            host.prompt('Latihan napas dihentikan. Kerja bagus sudah mencoba.', 'good');
+            host.complete();
+          }
         }, ['Sudah cukup, selesai'])
       ]);
 
@@ -108,6 +125,7 @@
       }
 
       function begin() {
+        if (finished || !running) return;
         clearTimers();
         paused = false;
         breath = 0;
@@ -117,7 +135,7 @@
       }
 
       function cycle() {
-        if (!running) return;
+        if (!running || finished) return;
         if (breath >= perRound) { endRound(); return; }
 
         /* ── tarik napas ── */
@@ -184,8 +202,10 @@
 
       const cleanup = function () { running = false; clearTimers(); };
       this._cleanup = cleanup;
-      this._pause = function () { pauseTimers(); };
-      this._resume = function () { resumeTimers(); };
+      /* Setelah anak menyatakan selesai, jangan biarkan jeda/gerak
+         menghidupkan kembali timer napas. */
+      this._pause = function () { if (!finished) pauseTimers(); };
+      this._resume = function () { if (!finished) resumeTimers(); };
     },
 
     pause: function () { if (this._pause) this._pause(); },

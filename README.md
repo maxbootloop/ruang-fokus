@@ -277,7 +277,7 @@ npm test              # sama dengan: node tools/smoke.mjs
 npm run check         # periksa sintaks semua berkas JavaScript
 ```
 
-Harness ini menjalankan aplikasi di Node dengan DOM tiruan, lalu memverifikasi **142 pemeriksaan**:
+Harness ini menjalankan aplikasi di Node dengan DOM tiruan, lalu memverifikasi **171 pemeriksaan**:
 
 - inisialisasi, katalog, filter, lencana, papan token
 - **keenam game dimainkan sampai selesai**, termasuk lewat jeda gerak antar ronde
@@ -289,6 +289,13 @@ Harness ini menjalankan aplikasi di Node dengan DOM tiruan, lalu memverifikasi *
   jeda & lanjut, penghapusan data, filter kosong
 - pengaturan dan mode aksesibilitas
 - tautan GitHub: normalisasi alamat, penolakan alamat asing, sinkronisasi ke footer
+- **regresi Lampu Fokus**: papan tidak pernah buntu, setiap kotak "cocok" benar-benar
+  menampilkan contohnya, dan papan diisi ulang saat kotak cocok habis
+- **regresi "berjalan sendiri"**: jam sesi tidak berkurang saat tab disembunyikan, tidak melompat
+  saat dilanjutkan, dan kehilangan fokus jendela tidak menjeda sesi
+- **regresi jeda gerak**: hitungan selalu bilangan bulat, tombolnya menutup layar, callback tetap
+  berjalan, ketukan ganda aman, dan jeda mandiri kembali ke beranda
+- **regresi tombol Napas Warna**: "Sudah cukup, selesai" tetap bekerja walau sesi sedang dibekukan
 - **nol galat runtime** sepanjang seluruh alur
 
 Beberapa bug nyata ditemukan dan diperbaiki lewat harness ini — lihat bagian catatan di
@@ -351,7 +358,7 @@ Sebelum mengirim pull request:
 
 ```bash
 npm run check     # sintaks
-npm test          # 142 pemeriksaan harus lulus
+npm test          # 171 pemeriksaan harus lulus
 ```
 
 Setiap pull request otomatis diuji oleh

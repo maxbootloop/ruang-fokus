@@ -273,7 +273,53 @@ jam sesi tidak berkurang selama tab disembunyikan dan tidak melompat saat dilanj
 
 **Total setelah kedua putaran: 142 pemeriksaan lulus, 0 galat runtime.**
 
-### 5.3 Catatan: dua bug pada harness uji itu sendiri
+### 5.3 Putaran ketiga — tiga keluhan lanjutan dari pemakaian nyata
+
+**A. "Jeda gerak muncul angka di belakang koma."**
+
+`paintBreak()` menulis `this._breakLeft` apa adanya, dan nilai itu adalah sisa waktu berbasis
+`performance.now()` — jadi tampil seperti `11.987`. Angka desimal membuat layar terlihat rusak dan
+membingungkan anak. Diperbaiki dengan `Math.ceil()` sehingga hitungan selalu bilangan bulat.
+
+**B. "Tombol jeda gerak tidak responsif, dan layar jeda tidak menutup padahal tugas berikutnya sudah berbunyi."**
+
+Ini satu bug dengan gejala ganda, dan penyebabnya ada di `endBreak()`:
+
+```js
+if (cb) { cb(); return; }     // keluar SEBELUM layar jeda ditutup
+```
+
+Callback dijalankan lebih dulu lalu fungsi **berhenti lebih awal** — sehingga layar jeda tidak pernah
+ditutup, sementara callback sudah membangun tugas berikutnya (bahkan sudah membunyikan instruksinya).
+Akibatnya anak melihat layar jeda yang masih menutupi permainan, dan tombolnya terasa mati padahal
+ketukannya diproses. Diperbaiki: layar jeda **selalu** ditutup, dan tujuan kembalinya diingat
+(`_breakFrom`) sehingga jeda dari dalam game kembali ke panggung, sedangkan alat jeda mandiri dari
+beranda kembali ke beranda. Ditambah penjaga agar satu ketukan tidak diproses dua kali.
+
+Penyebab kedua untuk "tombol tidak responsif": pembekuan tab pernah dipasang pada kejadian
+`blur`/`focus`, bukan hanya `visibilitychange`. Menekan tombol di dalam halaman dapat memicu
+`blur`/`focus`, sehingga sesi terasa terhenti sendiri dan tombol seperti tidak merespons. Kini
+**hanya `visibilitychange`** yang dipakai.
+
+**C. "Game Napas Warna, fungsi 'sudah cukup' tidak berfungsi."**
+
+Handler tombolnya hanya memanggil `host.complete()` tanpa melakukan apa pun lebih dulu. Bila sesi
+sedang dijeda atau dibekukan (mis. setelah tab kembali aktif), `complete()` tidak menghasilkan
+perubahan yang terlihat, jadi tombol tampak mati. Diperbaiki agar tombol bekerja **segera dan dalam
+kondisi apa pun**: menandai selesai, menghentikan timer napas, memperbarui tulisan di layar
+("Selesai"), baru menutup sesi. Jumlah napas per ronde juga diturunkan dari 4 ke 3 agar satu ronde
+tuntas lebih cepat (sekitar 20 detik), sehingga frasa "Sudah cukup" tidak perlu dipakai.
+
+**D. Bug tersembunyi yang ikut ketahuan: sesi ditandai "belum tuntas" padahal anak menyelesaikannya.**
+
+Rumus penanda tuntas memakai nomor ronde, tetapi saat game memanggil `complete()` ronde terakhir belum
+sempat dinaikkan — hasilnya `(1−0)/2 = 0,5`, sehingga sesi yang **selesai** tercatat sebagai belum
+tuntas dan hanya diberi satu bintang. Ditemukan oleh uji regresi Napas Warna. Kini `reason === 'complete'`
+selalu dihitung tuntas, dan hanya `'time'` yang dinilai dari ronde yang tercapai.
+
+**Total setelah ketiga putaran: 171 pemeriksaan lulus, 0 galat runtime.**
+
+### 5.4 Catatan: dua bug pada harness uji itu sendiri
 
 Harness juga sempat menyesatkan, dan perbaikannya penting agar hasil uji bisa dipercaya:
 

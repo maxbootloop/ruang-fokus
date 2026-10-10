@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+<title>Ruang Fokus — Game Belajar untuk Anak ADHD</title>
+<meta name="description" content="Ruang Fokus: kumpulan game belajar singkat 3–5 menit yang dirancang untuk anak dengan ADHD. Satu tugas per layar, timer visual, jeda gerak, dan token reward. Gratis, tanpa iklan, tanpa akun, semua data tersimpan di perangkat." />
+<meta name="theme-color" content="#0B3D3A" />
+<meta name="color-scheme" content="light" />
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🎯</text></svg>" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<a class="skip-link" href="#main">Lewati ke konten utama</a>
+
+<!-- ══════════ TOP BAR ══════════ -->
+<header class="topbar" role="banner">
+  <div class="topbar__inner">
+    <button class="brand" id="brandHome" type="button" aria-label="Kembali ke beranda Ruang Fokus">
+      <span class="brand__mark" aria-hidden="true">🎯</span>
+      <span class="brand__text">
+        <strong>Ruang Fokus</strong>
+        <small>Belajar nyaman untuk anak ADHD</small>
+      </span>
+    </button>
+
+    <div class="tokenbar" role="status" aria-live="polite" aria-label="Progres token">
+      <div class="tokenbar__item" title="Bintang terkumpul">
+        <span class="tokenbar__ico" aria-hidden="true">⭐</span>
+        <span class="tokenbar__num" id="tokensNow">0</span>
+      </div>
+      <div class="tokenbar__divider" aria-hidden="true"></div>
+      <div class="tokenbar__item" title="Token menuju hadiah berikutnya">
+        <span class="tokenbar__ico" aria-hidden="true">🎁</span>
+        <span class="tokenbar__num" id="tokensGoal">0/5</span>
+      </div>
+    </div>
+
+    <nav class="topbar__nav" aria-label="Navigasi utama">
+      <button class="iconbtn" type="button" id="btnCalm" data-nav="calm">
+        <span aria-hidden="true">🌬️</span><span class="iconbtn__t">Tenang</span>
+      </button>
+      <button class="iconbtn" type="button" id="btnProgress" data-nav="progress">
+        <span aria-hidden="true">📈</span><span class="iconbtn__t">Progres</span>
+      </button>
+      <button class="iconbtn" type="button" id="btnGrownup" data-nav="grownup">
+        <span aria-hidden="true">👩‍🏫</span><span class="iconbtn__t">Orang Tua</span>
+      </button>
+      <button class="iconbtn" type="button" id="btnSound" aria-pressed="true" title="Suara aktif">
+        <span aria-hidden="true" id="soundIco">🔊</span><span class="iconbtn__t">Suara</span>
+      </button>
+      <button class="iconbtn" type="button" id="btnMotion" aria-pressed="false" title="Gerakan aktif">
+        <span aria-hidden="true" id="motionIco">✨</span><span class="iconbtn__t">Gerak</span>
+      </button>
+      <button class="iconbtn" type="button" id="btnText" aria-pressed="false" title="Ukuran huruf &amp; spasi normal">
+        <span aria-hidden="true">🔤</span><span class="iconbtn__t">Baca</span>
+      </button>
+    </nav>
+  </div>
+  <!-- Token board: visual, concrete finish line -->
+  <div class="tokenstrip" id="tokenStrip" aria-hidden="true"></div>
+</header>
+
+<main id="main" class="app" tabindex="-1">
+
+  <!-- ══════════ HOME ══════════ -->
+  <section class="screen" id="screen-home" data-screen="home" aria-labelledby="homeTitle">
+    <div class="hero">
+      <p class="hero__eyebrow">Misi hari ini</p>
+      <h1 class="hero__title" id="homeTitle">Pilih satu game. <span class="hl">Cukup 5 menit.</span></h1>
+      <p class="hero__sub">Setiap game punya timer yang bisa dilihat, satu tugas saja di layar, dan jeda gerak di tengah. Kalau sudah selesai, kamu dapat bintang. Tidak ada iklan, tidak ada kejutan yang mengganggu.</p>
+
+      <div class="hero__actions">
+        <button class="btn btn--primary btn--xl" type="button" id="btnQuickStart">
+          <span aria-hidden="true">▶️</span> Mulai Cepat (pilih untukku)
+        </button>
+        <button class="btn btn--ghost btn--lg" type="button" id="btnSessionFlow">
+          <span aria-hidden="true">🗺️</span> Sesi Terpandu
+        </button>
+      </div>
+
+      <div class="hero__facts" role="list">
+        <span class="fact" role="listitem"><b>3–5</b> menit / game</span>
+        <span class="fact" role="listitem"><b id="factGames">6</b> game siap main</span>
+        <span class="fact" role="listitem"><b>0</b> iklan &amp; pop-up</span>
+        <span class="fact" role="listitem"><b>Lokal</b> data di perangkat</span>
+      </div>
+    </div>
+
+    <!-- What to do right now: one clear next action, no decisions required -->
+    <div class="panel panel--next" id="nextPanel">
+      <div class="panel__head">
+        <h2 class="panel__title"><span aria-hidden="true">👉</span> Lanjutkan dari sini</h2>
+      </div>
+      <div id="nextBody" class="next-body"></div>
+    </div>
+
+    <div class="homegrid">
+      <div class="homegrid__main">
+        <div class="filters" role="group" aria-label="Filter game">
+          <div class="filters__search">
+            <label class="sr-only" for="searchGame">Cari game</label>
+            <span class="filters__ico" aria-hidden="true">🔍</span>
+            <input id="searchGame" type="search" placeholder="Cari game… (misal: ingatan, angka)" autocomplete="off" />
+          </div>
+          <div class="filterrow" id="filterFocus" role="group" aria-label="Filter fokus latihan"></div>
+          <div class="filterrow" id="filterDur" role="group" aria-label="Filter durasi"></div>
+          <div class="filterrow" id="filterEnergy" role="group" aria-label="Filter tingkat energi"></div>
+        </div>
+        <div class="gamelist" id="gameList" aria-live="polite"></div>
+      </div>
+
+      <aside class="homegrid__side">
+        <div class="panel">
+          <h2 class="panel__title"><span aria-hidden="true">🧰</span> Alat bantu</h2>
+          <p class="panel__hint">Alat ini boleh dipakai kapan saja, tidak harus sambil main game.</p>
+          <div class="toolgrid">
+            <button class="tool" type="button" data-tool="breath">
+              <span class="tool__ico" aria-hidden="true">🌬️</span><b>Napas Tenang</b><small>2 menit menenangkan diri</small>
+            </button>
+            <button class="tool" type="button" data-tool="timer">
+              <span class="tool__ico" aria-hidden="true">⏳</span><b>Timer Visual</b><small>Lihat waktu yang tersisa</small>
+            </button>
+            <button class="tool" type="button" data-tool="steps">
+              <span class="tool__ico" aria-hidden="true">🪜</span><b>Pecah Tugas</b><small>Bagi tugas jadi langkah kecil</small>
+            </button>
+            <button class="tool" type="button" data-tool="body">
+              <span class="tool__ico" aria-hidden="true">🤸</span><b>Jeda Gerak</b><small>3 gerakan pelepas energi</small>
+            </button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel__title"><span aria-hidden="true">🏅</span> Lencana</h2>
+          <p class="panel__hint" id="badgeHint">Kumpulkan bintang untuk membuka lencana.</p>
+          <div class="badges" id="badgeGrid"></div>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- ══════════ INSTRUCTION CARDS (working-memory scaffold) ══════════ -->
+  <section class="screen" id="screen-brief" data-screen="brief" hidden aria-labelledby="briefTitle">
+    <div class="brief">
+      <div class="brief__head">
+        <div class="brief__emoji" id="briefEmoji" aria-hidden="true">🎮</div>
+        <div>
+          <p class="brief__kicker" id="briefKicker">Sebelum mulai</p>
+          <h1 class="brief__title" id="briefTitle">Nama game</h1>
+          <p class="brief__sub" id="briefSub"></p>
+        </div>
+      </div>
+
+      <ol class="stepcards" id="briefSteps" aria-label="Langkah bermain"></ol>
+
+      <div class="brief__meta" id="briefMeta"></div>
+
+      <div class="brief__benefits" id="briefBenefits">
+        <p class="brief__bentitle">Yang dilatih:</p>
+        <ul id="briefBenList"></ul>
+      </div>
+
+      <div class="brief__actions">
+        <button class="btn btn--primary btn--xl" type="button" id="btnPlay">
+          <span aria-hidden="true">▶</span> Mulai main
+        </button>
+        <button class="btn btn--ghost btn--lg" type="button" id="btnBriefBack">Pilih game lain</button>
+      </div>
+      <div class="brief__fav" id="briefFavRow"></div>
+      <p class="brief__note">Kalau bingung saat main, tekan tombol <b>Ulangi langkah</b> — kamu boleh melihat langkahnya kapan saja.</p>
+    </div>
+  </section>
+
+  <!-- ══════════ GAME STAGE ══════════ -->
+  <section class="screen screen--stage" id="screen-stage" data-screen="stage" hidden aria-labelledby="stageTitle">
+    <div class="stage__top">
+      <div class="stage__left">
+        <button class="btn btn--ghost btn--sm" type="button" id="btnStageExit">
+          <span aria-hidden="true">🏁</span> Selesai
+        </button>
+        <h1 class="stage__title" id="stageTitle">Game</h1>
+      </div>
+      <div class="stage__right">
+        <button class="btn btn--ghost btn--sm" type="button" id="btnStageSteps">
+          <span aria-hidden="true">🪜</span> Ulangi langkah
+        </button>
+        <button class="btn btn--ghost btn--sm" type="button" id="btnStagePause" aria-pressed="false">
+          <span aria-hidden="true">⏸️</span> Jeda
+        </button>
+      </div>
+    </div>
+
+    <!-- Visual timer: always visible, never a surprise ending -->
+    <div class="timerbar" id="timerBar" role="group" aria-label="Sisa waktu">
+      <div class="timerbar__track">
+        <div class="timerbar__fill" id="timerFill"></div>
+      </div>
+      <div class="timerbar__meta">
+        <span class="timerbar__clock" id="timerClock">3:00</span>
+        <span class="timerbar__round" id="timerRound">Ronde 1</span>
+        <span class="timerbar__score" id="timerScore">Skor 0</span>
+      </div>
+    </div>
+
+    <div class="stage__body" id="stageBody"></div>
+
+    <div class="stage__prompt" id="stagePrompt" aria-live="polite" role="status"></div>
+
+    <!-- Persistent step reminder: reduces working-memory load -->
+    <div class="stepnow" id="stepNow" hidden>
+      <span class="stepnow__label">Langkah <b id="stepNowNum">1</b> dari <b id="stepNowTotal">3</b></span>
+      <span class="stepnow__text" id="stepNowText"></span>
+    </div>
+  </section>
+
+  <!-- ══════════ MOVEMENT / CALM BREAK ══════════ -->
+  <section class="screen" id="screen-break" data-screen="break" hidden aria-labelledby="breakTitle">
+    <div class="breakwrap">
+      <div class="breakwrap__art" id="breakArt" aria-hidden="true">🤸</div>
+      <h1 class="breakwrap__title" id="breakTitle">Jeda gerak</h1>
+      <p class="breakwrap__text" id="breakText">Berdiri, lalu ikuti gerakannya sampai hitungan habis.</p>
+      <div class="breakwrap__ring" id="breakRing" role="img" aria-label="Hitungan jeda">
+        <span id="breakCount">10</span>
+      </div>
+      <div class="breakwrap__actions">
+        <button class="btn btn--primary btn--lg" type="button" id="btnBreakDone">Sudah, lanjut!</button>
+        <button class="btn btn--ghost" type="button" id="btnBreakSkip">Lewati jeda</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ BREATHING / CALM CORNER ══════════ -->
+  <section class="screen" id="screen-calm" data-screen="calm" hidden aria-labelledby="calmTitle">
+    <div class="calmwrap">
+      <h1 class="calmwrap__title" id="calmTitle">Napas Tenang</h1>
+      <p class="calmwrap__text">Ikuti lingkaran: <b>membesar = tarik napas</b>, <b>mengecil = buang napas</b>. Tidak perlu sempurna.</p>
+      <div class="breath" id="breathOrb" role="img" aria-label="Lingkaran panduan napas">
+        <div class="breath__orb"></div>
+        <span class="breath__label" id="breathLabel">Siap</span>
+      </div>
+      <div class="calmwrap__actions">
+        <button class="btn btn--primary btn--lg" type="button" id="btnBreathToggle">Mulai</button>
+        <button class="btn btn--ghost" type="button" id="btnBreathBack">Kembali</button>
+      </div>
+      <p class="calmwrap__count" id="breathCount"></p>
+    </div>
+  </section>
+
+  <!-- ══════════ VISUAL TIMER TOOL ══════════ -->
+  <section class="screen" id="screen-timer" data-screen="timer" hidden aria-labelledby="vtTitle">
+    <div class="calmwrap">
+      <h1 class="calmwrap__title" id="vtTitle">Timer Visual</h1>
+      <p class="calmwrap__text">Pilih lama waktu. Lingkaran akan menyusut supaya kelihatan sisa waktunya.</p>
+      <div class="vtpicker" id="vtPicker" role="group" aria-label="Pilih durasi"></div>
+      <div class="vt" id="vtStage">
+        <svg viewBox="0 0 220 220" class="vt__svg" aria-hidden="true">
+          <circle class="vt__bg" cx="110" cy="110" r="96"></circle>
+          <circle class="vt__fg" id="vtArc" cx="110" cy="110" r="96"></circle>
+        </svg>
+        <div class="vt__read"><span id="vtClock">05:00</span><small id="vtState">siap</small></div>
+      </div>
+      <div class="calmwrap__actions">
+        <button class="btn btn--primary btn--lg" type="button" id="btnVtToggle">Mulai</button>
+        <button class="btn btn--ghost" type="button" id="btnVtReset">Ulangi</button>
+        <button class="btn btn--ghost" type="button" id="btnVtBack">Kembali</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ TASK BREAKDOWN TOOL ══════════ -->
+  <section class="screen" id="screen-steps" data-screen="steps" hidden aria-labelledby="stTitle">
+    <div class="stepwrap">
+      <h1 class="stepwrap__title" id="stTitle">Pecah Tugas</h1>
+      <p class="stepwrap__text">Tulis satu tugas besar, lalu pecah jadi langkah kecil. Centang satu per satu — otak tidak perlu mengingat semuanya.</p>
+      <form class="stepform" id="stepForm">
+        <label class="sr-only" for="stepInput">Tulis langkah kecil</label>
+        <input id="stepInput" type="text" placeholder="Contoh: kerjakan PR matematika halaman 12" autocomplete="off" />
+        <button class="btn btn--primary" type="submit">Tambah</button>
+      </form>
+      <p class="stepwrap__hint">Saran: setiap langkah sebaiknya bisa selesai dalam <b>5 menit atau kurang</b> dan dimulai dengan kata kerja.</p>
+      <ul class="steplist" id="stepList" aria-live="polite"></ul>
+      <div class="stepwrap__actions">
+        <button class="btn btn--ghost" type="button" id="btnStepTemplates">Pakai contoh</button>
+        <button class="btn btn--ghost" type="button" id="btnStepClear">Kosongkan</button>
+        <button class="btn btn--ghost" type="button" id="btnStepsBack">Kembali</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ PROGRESS (child-facing) ══════════ -->
+  <section class="screen" id="screen-progress" data-screen="progress" hidden aria-labelledby="progTitle">
+    <div class="progwrap">
+      <h1 class="progwrap__title" id="progTitle">Progresku</h1>
+      <p class="progwrap__text">Lihat seberapa sering kamu berlatih. Yang penting adalah <b>usaha</b>, bukan nilai sempurna.</p>
+      <div class="statgrid" id="statGrid"></div>
+
+      <h2 class="progwrap__h2">Latihan 7 hari terakhir</h2>
+      <div class="chart" id="progChart" role="img" aria-label="Grafik latihan 7 hari terakhir"></div>
+
+      <h2 class="progwrap__h2">Game yang paling sering dimainkan</h2>
+      <ul class="toplist" id="progTop"></ul>
+
+      <div class="progwrap__actions">
+        <button class="btn btn--ghost" type="button" id="btnProgBack">Kembali</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ GROWN-UP AREA (parent / teacher) ══════════ -->
+  <section class="screen" id="screen-grownup" data-screen="grownup" hidden aria-labelledby="guTitle">
+    <div class="guwrap">
+      <div class="guhead">
+        <div>
+          <h1 class="guwrap__title" id="guTitle">Area Pendamping</h1>
+          <p class="guwrap__text">Untuk orang tua, guru, atau terapis. Ringkasan sesi, ritme latihan, dan pengaturan dukungan. Semua data hanya tersimpan di perangkat ini.</p>
+        </div>
+        <button class="btn btn--ghost" type="button" id="btnGuBack">Kembali</button>
+      </div>
+
+      <div class="gugate" id="guGate">
+        <p>Tahan tombol di bawah <b>2 detik</b> untuk masuk (agar anak tidak membuka tanpa sengaja).</p>
+        <button class="btn btn--primary btn--lg" type="button" id="btnGuHold">Tahan untuk masuk</button>
+        <div class="guhold-bar"><div class="guhold-bar__fill" id="guHoldFill"></div></div>
+      </div>
+
+      <div class="gubody" id="guBody" hidden>
+        <div class="statgrid" id="guStats"></div>
+
+        <div class="panel">
+          <h2 class="panel__title">Pengaturan dukungan</h2>
+          <div class="settings" id="guSettings"></div>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel__title">Catatan pengamatan</h2>
+          <p class="panel__hint">Catat hal yang Anda lihat (bukan diagnosis). Tersimpan lokal dan bisa diekspor.</p>
+          <form class="stepform" id="noteForm">
+            <label class="sr-only" for="noteInput">Tulis catatan</label>
+            <input id="noteInput" type="text" placeholder="Contoh: fokus bertahan 4 menit saat pakai timer" autocomplete="off" />
+            <button class="btn btn--primary" type="submit">Simpan</button>
+          </form>
+          <ul class="notelist" id="noteList"></ul>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel__title">Riwayat sesi</h2>
+          <div class="tablewrap">
+            <table class="gutable" id="guTable">
+              <caption class="sr-only">Riwayat sesi latihan</caption>
+              <thead><tr><th scope="col">Waktu</th><th scope="col">Game</th><th scope="col">Durasi</th><th scope="col">Akurasi</th><th scope="col">Berhenti sendiri</th></tr></thead>
+              <tbody id="guTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel__title">Data</h2>
+          <p class="panel__hint">Ekspor untuk dibawa ke konsultasi, atau hapus semua data dari perangkat ini.</p>
+          <div class="gudata">
+            <button class="btn btn--ghost" type="button" id="btnExport">Ekspor data (JSON)</button>
+            <button class="btn btn--ghost" type="button" id="btnPrint">Cetak ringkasan</button>
+            <button class="btn btn--danger" type="button" id="btnWipe">Hapus semua data</button>
+          </div>
+        </div>
+
+        <div class="panel">
+          <h2 class="panel__title"><span aria-hidden="true">🐙</span> Tentang &amp; GitHub</h2>
+          <p class="panel__hint">Proyek ini terbuka. Tempelkan alamat repositori GitHub Anda di bawah, maka tautannya muncul di footer dan di sini.</p>
+          <form class="stepform" id="repoForm">
+            <label class="sr-only" for="repoInput">Alamat repositori GitHub</label>
+            <input id="repoInput" type="url" inputmode="url" autocomplete="off"
+                   placeholder="https://github.com/nama-pengguna/ruang-fokus" />
+            <button class="btn btn--primary" type="submit">Simpan</button>
+          </form>
+          <p class="panel__hint" id="repoStatus">Belum ada repositori disetel.</p>
+          <div class="gudata">
+            <a class="btn btn--ghost" id="repoLink" href="https://docs.github.com/pages" target="_blank" rel="noopener noreferrer">
+              🐙 Buka repositori
+            </a>
+            <button class="btn btn--ghost" type="button" id="btnRepoClear">Kosongkan tautan</button>
+          </div>
+          <p class="panel__hint" style="margin-top:12px">
+            Aplikasi ini berupa berkas statis. Untuk menerbitkannya gratis, unggah folder ini ke GitHub lalu
+            aktifkan <b>Settings → Pages → Source: GitHub Actions</b>. Rinciannya ada di README.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ RESULT / REWARD ══════════ -->
+  <section class="screen" id="screen-done" data-screen="done" hidden aria-labelledby="doneTitle">
+    <div class="donewrap">
+      <div class="donewrap__stars" id="doneStars" aria-hidden="true"></div>
+      <h1 class="donewrap__title" id="doneTitle">Selesai!</h1>
+      <p class="donewrap__praise" id="donePraise">Kamu berusaha keras sampai akhir. Itu yang penting.</p>
+      <div class="statgrid statgrid--tight" id="doneStats"></div>
+      <div class="donewrap__reward" id="doneReward"></div>
+      <div class="donewrap__actions">
+        <button class="btn btn--primary btn--lg" type="button" id="btnDoneAgain"><span aria-hidden="true">🔁</span> Main lagi</button>
+        <button class="btn btn--ghost btn--lg" type="button" id="btnDoneOther">Game lain</button>
+        <button class="btn btn--ghost btn--lg" type="button" id="btnDoneCalm"><span aria-hidden="true">🌬️</span> Istirahat dulu</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ GAME OVERLAY (pause / steps) ══════════ -->
+  <div class="overlay" id="overlay" hidden>
+    <div class="overlay__box" role="dialog" aria-modal="true" aria-labelledby="ovTitle">
+      <h2 class="overlay__title" id="ovTitle">Jeda</h2>
+      <div class="overlay__body" id="ovBody"></div>
+      <div class="overlay__actions" id="ovActions"></div>
+    </div>
+  </div>
+
+  <!-- ══════════ TOAST / CELEBRATION ══════════ -->
+  <div class="toaster" id="toaster" aria-live="polite" aria-atomic="false"></div>
+
+</main>
+
+<footer class="footer">
+  <p><b>Ruang Fokus</b> — dirancang mengikuti prinsip dukungan ADHD: instruksi singkat, satu tugas per layar, timer visual, reward langsung, dan jeda gerak. Bukan alat diagnosis dan bukan pengganti terapi.</p>
+  <p class="footer__small">Gratis · tanpa iklan · tanpa akun · data tersimpan di perangkat Anda.</p>
+  <p class="footer__small footer__repo">
+    <span aria-hidden="true">🐙</span>
+    <a id="footerRepoLink" href="https://docs.github.com/pages" target="_blank" rel="noopener noreferrer">Kode sumber &amp; cara menerbitkan di GitHub</a>
+    <span class="footer__sep" aria-hidden="true">·</span>
+    <a href="LICENSE" target="_blank" rel="noopener noreferrer">Lisensi MIT</a>
+  </p>
+</footer>
+
+<script src="js/core/store.js"></script>
+<script src="js/core/audio.js"></script>
+<script src="js/core/ui.js"></script>
+<script src="js/core/session.js"></script>
+<script src="js/games/attention.js"></script>
+<script src="js/games/memory.js"></script>
+<script src="js/games/inhibition.js"></script>
+<script src="js/games/breathe.js"></script>
+<script src="js/games/math.js"></script>
+<script src="js/games/calm.js"></script>
+<script src="app.js"></script>
+</body>
+</html>

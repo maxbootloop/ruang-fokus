@@ -1,0 +1,54 @@
+name: Uji
+
+# Harness uji berjalan di Node tanpa DOM sungguhan, jadi CI cepat dan tanpa
+# dependensi apa pun. Setiap push dan pull request diverifikasi.
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    name: Uji asap (semua game & alur)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ambil kode
+        uses: actions/checkout@v4
+
+      - name: Siapkan Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Periksa sintaks semua berkas JavaScript
+        run: |
+          set -e
+          for f in $(find . -name '*.js' -not -path './node_modules/*' -not -path './docs/*'); do
+            node --check "$f"
+            echo "ok  $f"
+          done
+          for f in $(find . -name '*.mjs' -not -path './node_modules/*'); do
+            node --check "$f"
+            echo "ok  $f"
+          done
+
+      - name: Jalankan harness uji
+        run: node tools/smoke.mjs
+
+      - name: Pastikan tidak ada berkas besar tak sengaja ter-commit
+        run: |
+          set -e
+          batas=2097152   # 2 MB
+          besar=$(find . -type f -not -path './.git/*' -size +${batas}c -print)
+          if [ -n "$besar" ]; then
+            echo "::error::Berkas berikut melebihi 2 MB:"
+            echo "$besar"
+            exit 1
+          fi
+          echo "Ukuran berkas wajar."

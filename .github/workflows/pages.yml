@@ -1,0 +1,63 @@
+name: Terbitkan ke GitHub Pages
+
+# Aplikasi ini murni berkas statis, jadi bisa langsung diterbitkan ke
+# GitHub Pages. Aktifkan sekali di: Settings -> Pages -> Source: GitHub Actions.
+# Setelah itu setiap push ke main akan memperbarui situsnya.
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  uji:
+    name: Uji sebelum terbit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Jalankan harness uji
+        run: node tools/smoke.mjs
+
+  terbitkan:
+    name: Terbitkan
+    needs: uji
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/configure-pages@v5
+      - name: Susun berkas situs
+        run: |
+          set -e
+          mkdir -p _site
+          # hanya berkas yang dibutuhkan untuk menjalankan aplikasi
+          cp index.html styles.css app.js LICENSE _site/
+          cp -r js _site/js
+          # README disertakan agar tautan "Lisensi MIT" dan dokumentasi tetap hidup
+          cp README.md _site/README.md
+          mkdir -p _site/docs
+          cp docs/ANALISIS.md _site/docs/ANALISIS.md
+          cp docs/referensi-katalog-papaninteraktif.json _site/docs/
+          # .nojekyll mencegah GitHub memproses folder dengan garis bawah
+          touch _site/.nojekyll
+          echo "Isi situs:"
+          find _site -type f | sort
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - id: deployment
+        uses: actions/deploy-pages@v4

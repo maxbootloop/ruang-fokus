@@ -1,0 +1,993 @@
+[
+  {
+    "id": "math-domino-arena",
+    "title": "Math Domino Arena",
+    "subtitle": "Game Numerasi Interaktif",
+    "url": "https://math-games.papaninteraktif.com/",
+    "description": "Asah kemampuan numerasi, penalaran, dan strategi melalui permainan domino matematika yang interaktif dan seru.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "general",
+    "learningFocus": "Numerasi, penalaran matematika, strategi, dan pemecahan masalah",
+    "bgColor": "linear-gradient(135deg, #0F766E 0%, #14B8A6 50%, #F59E0B 100%)",
+    "tags": [
+      "🔢 Numerasi"
+    ],
+    "categoryKeys": [
+      "numeracy"
+    ],
+    "howToPlay": [
+      "Pilih mode permainan yang tersedia.",
+      "Amati tantangan matematika pada keping domino.",
+      "Pikirkan jawaban dan pilih keping yang sesuai.",
+      "Susun keping dengan tepat untuk melanjutkan permainan dan meraih skor."
+    ],
+    "educationalBenefits": [
+      "Melatih kemampuan numerasi dan penalaran matematika.",
+      "Meningkatkan konsentrasi dan ketelitian.",
+      "Mengembangkan strategi dan kemampuan pemecahan masalah."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "jejak-angka",
+    "title": "Jejak Angka",
+    "subtitle": "Petualangan Numerasi & Logika",
+    "url": "https://gamejejakangka.papaninteraktif.com/",
+    "description": "Game numerasi dan logika yang melatih ketelitian berhitung, strategi memilih angka, dan kemampuan mencapai jumlah target dengan pilihan yang tepat.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "general",
+    "learningFocus": "Ketelitian berhitung, penjumlahan, strategi memilih angka, pengambilan keputusan, dan logika.",
+    "bgColor": "linear-gradient(135deg, #2563EB 0%, #4F46E5 100%)",
+    "tags": [
+      "🔢 Numerasi",
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "numeracy",
+      "logic"
+    ],
+    "howToPlay": [
+      "Pilih angka pada papan secara bebas.",
+      "Setiap pilihan menambah jumlah menuju target.",
+      "Capai jumlah target dengan pilihan angka yang tepat.",
+      "Jika melewati target, gunakan undo untuk memperbaiki pilihan."
+    ],
+    "educationalBenefits": [
+      "Melatih ketelitian dalam berhitung.",
+      "Menguatkan kemampuan penjumlahan.",
+      "Melatih pengambilan keputusan.",
+      "Mengembangkan strategi dan penalaran logis.",
+      "Melatih fokus dan ketelitian melalui permainan interaktif."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "helirescue",
+    "title": "HELI RESCUE",
+    "subtitle": "Misi Penyelamat Hutan",
+    "url": "https://helirescue.papaninteraktif.com/",
+    "description": "Terbang, temukan titik api, dan padamkan kebakaran hutan sambil belajar. Pilih misi, kendalikan helikopter, dan selamatkan lebih banyak hutan!",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "general",
+    "learningFocus": "Ketangkasan, Logika, Pengambilan Keputusan",
+    "bgColor": "linear-gradient(135deg, #064E3B 0%, #059669 100%)",
+    "tags": [
+      "🔢 Numerasi",
+      "📚 Literasi",
+      "🎯 Ice Breaking",
+      "🧠 Logika",
+      "🏀 Sport"
+    ],
+    "categoryKeys": [
+      "numeracy",
+      "literacy",
+      "ice-breaking",
+      "logic",
+      "sport"
+    ],
+    "howToPlay": [
+      "Pilih misi dari markas",
+      "Kendalikan helikopter hijau",
+      "Ambil air dan padamkan titik api",
+      "Jawab pertanyaan untuk mendapatkan skor ekstra"
+    ],
+    "educationalBenefits": [
+      "Melatih koordinasi mata dan tangan",
+      "Meningkatkan kesadaran lingkungan",
+      "Melatih kecepatan dalam mengambil keputusan"
+    ],
+    "isNew": true
+  },
+  {
+    "id": "sciencelink",
+    "title": "SCIENCELINK",
+    "subtitle": "Hubungkan. Pikirkan. Pecahkan.",
+    "url": "http://sciencelink-game.papaninteraktif.com/",
+    "description": "Game edukasi IPA interaktif berbasis puzzle yang melatih pemahaman konsep sains dan logika penalaran.",
+    "audience": "SD, SMP",
+    "educationLevel": "sd",
+    "learningFocus": "IPA, pemahaman konsep sains, logika penalaran",
+    "bgColor": "#3B82F6",
+    "tags": [
+      "🧠 Logika",
+      "🧪 Science",
+      "📖 Literasi"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Amati kepingan puzzle sains yang tersedia.",
+      "Hubungkan konsep yang memiliki keterkaitan.",
+      "Pecahkan teka-teki logika untuk menyelesaikan level."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan daya nalar logika analitis.",
+      "Memperkuat pemahaman konsep dasar sains.",
+      "Melatih kemampuan literasi dan memecahkan masalah."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "banua-fruit-blast",
+    "title": "Banua Fruit Blast",
+    "subtitle": "Tangkas Berhitung!",
+    "url": "https://borneo-fruit-math.papaninteraktif.com/",
+    "description": "Game edukasi interaktif untuk melatih ketangkasan berhitung dengan tema memotong buah. Cocok digunakan sebagai ice breaking seru dalam pembelajaran matematika.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Berhitung cepat, penjumlahan, dan pengurangan",
+    "bgColor": "#FDE047",
+    "tags": [
+      "🔢 Numerasi",
+      "🎯 Ice Breaking"
+    ],
+    "categoryKeys": [
+      "numeracy",
+      "ice-breaking"
+    ],
+    "howToPlay": [
+      "Perhatikan soal matematika yang muncul di layar utama.",
+      "Tunggu buah-buahan melayang yang membawa berbagai pilihan angka.",
+      "Ayunkan tangan untuk mengiris buah yang membawa jawaban yang benar.",
+      "Hindari mengiris bom atau buah dengan jawaban yang salah.",
+      "Kumpulkan skor tertinggi sebelum batas waktu berakhir."
+    ],
+    "educationalBenefits": [
+      "Melatih kemampuan berhitung cepat (aritmatika dasar).",
+      "Meningkatkan koordinasi mata dan motorik tangan.",
+      "Melatih fokus dan konsentrasi di bawah tekanan waktu."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "si-pemanah",
+    "title": "Si Pemanah",
+    "subtitle": "Hitung Cepat!",
+    "url": "https://matharcher.papaninteraktif.com/",
+    "description": "Latih ketepatan dan kecepatan berhitungmu bersama Si Pemanah. Jawab soal matematika dengan benar untuk mengumpulkan skor tertinggi!",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Ketangkasan operasi hitung matematika",
+    "bgColor": "#FF8FA3",
+    "tags": [
+      "🔢 Numerasi",
+      "🎯 Ice Breaking"
+    ],
+    "categoryKeys": [
+      "numeracy",
+      "ice-breaking"
+    ],
+    "howToPlay": [
+      "Lihat target angka atau soal matematika yang diberikan.",
+      "Arahkan busur panah ke jawaban yang paling tepat.",
+      "Tarik dan lepaskan anak panah untuk menembak target.",
+      "Lanjutkan ke level berikutnya dengan tingkat kesulitan yang meningkat."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan kecepatan dan ketepatan menghitung.",
+      "Melatih fokus visual dan akurasi.",
+      "Membangun pemahaman konsep angka secara interaktif."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "rimba-pedia",
+    "title": "Rimba Pedia",
+    "subtitle": "Si Juara Rimba",
+    "url": "https://zoology-game.papaninteraktif.com/",
+    "description": "Jelajahi dunia satwa melalui permainan logika dan literasi. Temukan fakta menarik tentang hewan di setiap tantangannya.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Pengenalan hewan dan kemampuan literasi dasar",
+    "bgColor": "#84CC16",
+    "tags": [
+      "🧠 Logika",
+      "📚 Literasi"
+    ],
+    "categoryKeys": [
+      "logic",
+      "literacy"
+    ],
+    "howToPlay": [
+      "Jelajahi peta virtual hutan Nusantara.",
+      "Cari dan temukan berbagai hewan langka yang bersembunyi.",
+      "Pilih hewan yang ditemukan untuk membaca ensiklopedia informasinya.",
+      "Jawab pertanyaan singkat terkait hewan tersebut untuk mendapatkan poin."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan literasi membaca melalui informasi ensiklopedia.",
+      "Menambah wawasan tentang keanekaragaman hayati Indonesia.",
+      "Melatih ketelitian visual dalam mencari objek."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "celestial-weaver",
+    "title": "Celestial Weaver",
+    "subtitle": "Cahaya Al-Qur'an",
+    "url": "https://susunayat.papaninteraktif.com/",
+    "description": "Bermain sambil mengingat ayat suci Al-Qur'an. Game edukasi Islami ini mengajak pemain menyusun dan merangkai ayat dengan interaktif.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Menyusun dan menghafal ayat Al-Qur'an",
+    "bgColor": "#D4AF37",
+    "tags": [
+      "🕌 Religion"
+    ],
+    "categoryKeys": [
+      "religion"
+    ],
+    "howToPlay": [
+      "Pilih tantangan menenun dari motif tradisional yang tersedia.",
+      "Perhatikan pola warna dan bentuk pada panduan.",
+      "Tarik benang virtual dan ikuti pola yang sesuai.",
+      "Selesaikan tenunan hingga membentuk kain tradisional yang utuh."
+    ],
+    "educationalBenefits": [
+      "Melatih pengenalan pola dan logika algoritmik dasar.",
+      "Menumbuhkan apresiasi terhadap seni budaya tradisional.",
+      "Meningkatkan ketelitian dan motorik halus."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "tanzib",
+    "title": "Tanzib",
+    "subtitle": "Timbangan Ajaib",
+    "url": "https://tanzib.papaninteraktif.com/",
+    "description": "Gunakan logika dan pengetahuan agamamu pada Timbangan Ajaib Tanzib. Media pembelajaran Islami yang menyenangkan untuk anak.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "paud",
+    "learningFocus": "Logika dan pengetahuan dasar agama Islam",
+    "bgColor": "#86EFAC",
+    "tags": [
+      "🕌 Religion"
+    ],
+    "categoryKeys": [
+      "religion"
+    ],
+    "howToPlay": [
+      "Pilih tingkat kesulitan kuis seputar sejarah Islam.",
+      "Baca pertanyaan yang ditampilkan di layar.",
+      "Pilih jawaban yang paling tepat dari opsi yang tersedia.",
+      "Pelajari penjelasan sejarah setelah menjawab pertanyaan."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan wawasan literasi sejarah kebudayaan Islam.",
+      "Melatih kemampuan membaca dan pemahaman teks.",
+      "Membangun karakter dan nilai moral dari tokoh sejarah."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "puzzle",
+    "title": "Puzzle Gambar",
+    "subtitle": "Upload Fotomu",
+    "url": "https://gamepuzzle.papaninteraktif.com/",
+    "description": "Susun kepingan puzzle menjadi gambar yang utuh. Kamu juga bisa mengunggah foto sendiri atau materi pelajaran untuk dijadikan puzzle interaktif!",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "general",
+    "learningFocus": "Pemecahan masalah, pengenalan pola, dan ketelitian",
+    "bgColor": "#E45C63",
+    "tags": [
+      "🎯 Ice Breaking",
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "ice-breaking",
+      "logic"
+    ],
+    "howToPlay": [
+      "Perhatikan gambar utuh sebelum diacak.",
+      "Pilih kepingan puzzle yang berserakan.",
+      "Tarik dan letakkan kepingan ke tempat yang tepat di kanvas.",
+      "Susun hingga gambar Nusantara kembali utuh."
+    ],
+    "educationalBenefits": [
+      "Melatih kemampuan logika spasial dan visual.",
+      "Meningkatkan memori jangka pendek anak.",
+      "Mengenalkan keragaman budaya Nusantara secara visual."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "martabak-pecahan",
+    "title": "Martabak Pecahan",
+    "subtitle": "Pecahan Lezat!",
+    "url": "https://fraction.papaninteraktif.com/",
+    "description": "Belajar konsep pecahan matematika jadi lebih mudah dan lezat menggunakan analogi potongan martabak.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Pemahaman konsep dasar pecahan matematika",
+    "bgColor": "#FFCA28",
+    "tags": [
+      "🔢 Numerasi"
+    ],
+    "categoryKeys": [
+      "numeracy"
+    ],
+    "howToPlay": [
+      "Terima pesanan pelanggan yang meminta porsi martabak tertentu.",
+      "Pilih alat pemotong untuk membagi martabak sesuai nilai pecahan.",
+      "Seret potongan martabak yang bernilai benar ke dalam kotak pesanan.",
+      "Selesaikan pesanan sebelum pelanggan pergi."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan konsep pecahan matematika secara visual dan konkret.",
+      "Melatih kemampuan pemecahan masalah sederhana.",
+      "Mengaitkan matematika dengan kehidupan sehari-hari."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "doodle",
+    "title": "Doodle AI",
+    "subtitle": "Gambar & Tebak",
+    "url": "https://doodleai.papaninteraktif.com/",
+    "description": "Uji kreativitasmu dalam menggambar! Kecerdasan buatan (AI) akan menebak setiap gambar yang kamu buat dalam waktu singkat.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "general",
+    "learningFocus": "Kreativitas, ekspresi seni, dan motorik halus",
+    "bgColor": "#41A89A",
+    "tags": [
+      "🎯 Ice Breaking"
+    ],
+    "categoryKeys": [
+      "ice-breaking"
+    ],
+    "howToPlay": [
+      "Pilih alat gambar (kuas, pensil, atau penghapus).",
+      "Gunakan layar sentuh untuk menggambar bebas di atas kanvas.",
+      "Eksperimen dengan berbagai warna untuk menghias karya.",
+      "Simpan atau hapus kanvas untuk memulai kembali."
+    ],
+    "educationalBenefits": [
+      "Merangsang imajinasi dan kreativitas visual.",
+      "Melatih motorik halus dan koordinasi tangan-mata.",
+      "Menjadi media ekspresi bebas untuk anak."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "si-taktik",
+    "title": "Si Taktik",
+    "subtitle": "Garis Bilangan",
+    "url": "https://line.papaninteraktif.com/",
+    "description": "Pahami konsep urutan dan nilai angka melalui permainan garis bilangan interaktif bersama Si Taktik.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Logika matematika dan pemahaman garis bilangan",
+    "bgColor": "#8B5CF6",
+    "tags": [
+      "🔢 Numerasi",
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "numeracy",
+      "logic"
+    ],
+    "howToPlay": [
+      "Perhatikan area permainan Tic-Tac-Toe.",
+      "Pilih kotak kosong untuk meletakkan simbol milikmu (X atau O).",
+      "Coba susun tiga simbol berurutan secara horizontal, vertikal, atau diagonal.",
+      "Halangi lawan agar tidak menyusun tiga simbol lebih dulu."
+    ],
+    "educationalBenefits": [
+      "Melatih pemikiran strategis dan perencanaan langkah.",
+      "Meningkatkan kemampuan problem solving dan antisipasi.",
+      "Membangun logika berpikir sederhana."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "traditional",
+    "title": "Lomba 17an",
+    "subtitle": "Seru & Edukatif",
+    "url": "https://script.google.com/a/macros/guru.sd.belajar.id/s/AKfycbx7noID9ShAAhj5-Us7pS2SZSGQthsb88u74G78i0o9pTGJxg2RUIeXznQi8EsnYvGYFg/exec",
+    "description": "Rasakan keseruan berbagai perlombaan khas 17 Agustus secara virtual. Sangat cocok digunakan untuk ice breaking memeriahkan kelas.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "general",
+    "learningFocus": "Ketangkasan dan perayaan budaya lokal",
+    "bgColor": "#F97316",
+    "tags": [
+      "🎯 Ice Breaking"
+    ],
+    "categoryKeys": [
+      "ice-breaking"
+    ],
+    "howToPlay": [
+      "Pilih jenis alat musik gamelan yang ingin dimainkan.",
+      "Sentuh atau ketuk bilah/instrumen di layar untuk menghasilkan suara.",
+      "Ikuti panduan nada untuk memainkan lagu tradisional sederhana.",
+      "Eksplorasi harmoni dengan membunyikan beberapa instrumen."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan kekayaan alat musik tradisional Indonesia.",
+      "Melatih kecerdasan musikal dan ritme.",
+      "Meningkatkan apresiasi terhadap seni budaya lokal."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "space-war",
+    "title": "Perang Antariksa",
+    "subtitle": "Duel Matematika",
+    "url": "https://spacewar.papaninteraktif.com/",
+    "description": "Berpetualang di luar angkasa sambil berduel matematika! Jawab soal perhitungan secepat mungkin untuk mengalahkan musuh.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Berhitung cepat di bawah tekanan waktu",
+    "bgColor": "#2563EB",
+    "tags": [
+      "🔢 Numerasi",
+      "🎯 Ice Breaking"
+    ],
+    "categoryKeys": [
+      "numeracy",
+      "ice-breaking"
+    ],
+    "howToPlay": [
+      "Kendalikan pesawat luar angkasa dengan memecahkan soal matematika.",
+      "Tembak musuh yang datang dengan mengetik atau memilih jawaban benar.",
+      "Jawab secepat mungkin sebelum musuh mendekat.",
+      "Kalahkan bos musuh di akhir setiap level."
+    ],
+    "educationalBenefits": [
+      "Melatih kemampuan aritmatika mental di bawah tekanan.",
+      "Meningkatkan fokus dan refleks cepat.",
+      "Membangun kepercayaan diri dalam menyelesaikan soal matematika."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "ai-basketball",
+    "title": "AI Basketball",
+    "subtitle": "Aktif Bergerak!",
+    "url": "https://gamebasket.papaninteraktif.com/",
+    "description": "Ayo aktif bergerak! Gunakan kamera perangkatmu untuk mendeteksi gerakan tubuh dan masukkan bola basket ke dalam ring secara virtual.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Aktivitas fisik, koordinasi gerak, dan motorik kasar",
+    "bgColor": "#E11D48",
+    "tags": [
+      "🏀 Sport"
+    ],
+    "categoryKeys": [
+      "sport"
+    ],
+    "howToPlay": [
+      "Berdiri di depan kamera panel interaktif.",
+      "Ikuti instruksi gerakan (seperti melompat atau melempar) untuk memasukkan bola.",
+      "Sinkronkan gerakan fisikmu dengan timing di layar.",
+      "Kumpulkan poin terbanyak dari setiap tembakan sukses."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan aktivitas fisik dan kesehatan tubuh.",
+      "Melatih koordinasi motorik kasar dan ketepatan gerak.",
+      "Memberikan pengalaman olahraga secara imersif dan interaktif."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "mancing-kata",
+    "title": "Mancing Kata",
+    "subtitle": "Cari Kata Di Air",
+    "url": "https://fishing.papaninteraktif.com/",
+    "description": "Uji ketangkasanmu memancing huruf dan kata yang tersembunyi di dalam air.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Pengenalan kosa kata dan ketelitian",
+    "bgColor": "#0891B2",
+    "tags": [
+      "🏀 Sport"
+    ],
+    "categoryKeys": [
+      "sport"
+    ],
+    "howToPlay": [
+      "Perhatikan kata target yang diminta di layar.",
+      "Arahkan kail pancing virtual ke ikan yang membawa huruf yang tepat.",
+      "Tangkap huruf secara berurutan agar membentuk kata.",
+      "Hindari menangkap rintangan atau huruf yang salah."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan penguasaan kosa kata dan ejaan.",
+      "Melatih ketelitian visual dan fokus.",
+      "Mengenalkan struktur bahasa secara interaktif."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "kancil",
+    "title": "Jalan Kancil",
+    "subtitle": "Logika Cerdik",
+    "url": "https://kancil-logic-puzzle-game.papaninteraktif.com/",
+    "description": "Bantu Kancil mencari jalan keluar! Permainan teka-teki logika yang melatih otak untuk berpikir kritis dan menyusun strategi.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Berpikir komputasional dan pemecahan masalah",
+    "bgColor": "#34D399",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Perhatikan peta labirin atau rintangan di layar.",
+      "Rancang jalur pergerakan menggunakan blok-blok perintah arah.",
+      "Susun algoritma (maju, belok kiri, belok kanan) agar Kancil mencapai tujuan.",
+      "Jalankan program dan perbaiki jika Kancil menabrak rintangan."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan dasar-dasar pemikiran komputasional (coding).",
+      "Melatih pemecahan masalah (problem solving) secara logis.",
+      "Membangun kemampuan perencanaan dan prediksi."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "nusaboard",
+    "title": "NusaBoard",
+    "subtitle": "Mind Mapping",
+    "url": "https://nusa.papaninteraktif.com/",
+    "description": "Kanvas interaktif untuk menyusun ide, mind mapping, dan kolaborasi pemikiran secara visual.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "general",
+    "learningFocus": "Pengorganisasian ide dan visualisasi konsep",
+    "bgColor": "linear-gradient(135deg, #FFFFFF 50%, #FFEBEE 100%)",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Buka kanvas kosong interaktif NusaBoard.",
+      "Tambahkan teks, bentuk, atau gambar untuk memulai diskusi.",
+      "Tarik garis penghubung antar elemen untuk membuat peta pikiran (mind map).",
+      "Gunakan bersama teman dalam sesi kolaborasi kelas."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan kemampuan pengorganisasian ide dan informasi.",
+      "Melatih kreativitas presentasi visual.",
+      "Mendukung kerja sama tim dan kolaborasi ide secara real-time."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "jagoan-kata",
+    "title": "Jagoan Kata",
+    "subtitle": "Juara Literasi",
+    "url": "https://literasi.papaninteraktif.com/",
+    "description": "Perkaya kosa kata dan kemampuan bahasamu! Rangkai huruf menjadi kata bermakna dalam tantangan literasi yang seru.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Penguasaan kosa kata dan ejaan baku",
+    "bgColor": "#6366F1",
+    "tags": [
+      "📚 Literasi"
+    ],
+    "categoryKeys": [
+      "literacy"
+    ],
+    "howToPlay": [
+      "Lihat serangkaian huruf acak yang diberikan.",
+      "Geser dan rangkai huruf-huruf tersebut menjadi sebuah kata baku.",
+      "Temukan sebanyak mungkin kombinasi kata tersembunyi.",
+      "Selesaikan teka-teki sebelum waktu habis."
+    ],
+    "educationalBenefits": [
+      "Memperkaya perbendaharaan kosa kata Bahasa Indonesia.",
+      "Melatih kemampuan anagram dan pemrosesan bahasa.",
+      "Meningkatkan kemampuan mengeja kata dengan benar."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "geo-squad",
+    "title": "Geo Squad",
+    "subtitle": "Bentuk Geometri",
+    "url": "https://geo.papaninteraktif.com/",
+    "description": "Mari mengenal berbagai macam bentuk geometri dan bangun datar bersama pasukan Geo Squad.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Pengenalan bentuk ruang dan bangun datar",
+    "bgColor": "#F59E0B",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Perhatikan properti bangun datar atau ruang yang diminta (contoh: cari yang memiliki 4 sisi).",
+      "Pilih karakter Geo Squad yang merepresentasikan bentuk yang tepat.",
+      "Pasangkan bentuk dengan bayangan atau slot yang sesuai.",
+      "Selesaikan level untuk mempelajari karakteristik bangun geometri baru."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan konsep geometri dasar secara visual.",
+      "Melatih kemampuan klasifikasi dan pencocokan bentuk.",
+      "Meningkatkan pemahaman tentang sifat-sifat bangun datar."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "ruang-io",
+    "title": "Ruang.io",
+    "subtitle": "Eksplorasi 3D",
+    "url": "https://gabung.papaninteraktif.com/",
+    "description": "Eksplorasi konsep bangun ruang tiga dimensi secara interaktif. Putar dan lihat objek dari berbagai sudut pandang.",
+    "audience": "SD, SMP, SMA",
+    "educationLevel": "sd",
+    "learningFocus": "Pemahaman bangun ruang dan spasial 3D",
+    "bgColor": "#FDE68A",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Pilih objek bangun ruang 3D yang ingin dieksplorasi.",
+      "Gunakan jari untuk memutar objek ke segala arah (360 derajat).",
+      "Perhatikan jumlah sisi, rusuk, dan titik sudut dari objek tersebut.",
+      "Buka jaring-jaring bangun ruang untuk melihat struktur datarnya."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan kemampuan spasial dan visualisasi 3D.",
+      "Membantu pemahaman konsep jaring-jaring bangun ruang.",
+      "Mempermudah abstraksi materi matematika geometri."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "color-link-junior",
+    "title": "Color Link Junior",
+    "subtitle": "Puzzle Logika Warna",
+    "url": "https://colorlinkjunior.papaninteraktif.com/",
+    "description": "Hubungkan warna dan pecahkan jalurnya! Game puzzle warna edukatif untuk anak PAUD, TK, dan SD yang melatih pemikiran logis, pengenalan warna, dan koordinasi motorik secara menyenangkan.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Pengenalan warna, penalaran spasial, pemecahan masalah logika, dan koordinasi motorik halus.",
+    "bgColor": "linear-gradient(135deg, #FFFFFF 0%, #F0F9FF 45%, #FAF5FF 100%)",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Pilih mode permainan (Solo 26 level, Duel, atau Squad) dan ukuran papan grid.",
+      "Sentuh titik warna dan tarik garis menuju pasangan titik dengan warna yang sama.",
+      "Pastikan setiap jalur garis warna tidak saling bersilangan atau bertubrukan.",
+      "Hubungkan seluruh warna hingga seluruh petak papan terisi penuh untuk menang!"
+    ],
+    "educationalBenefits": [
+      "Melatih penalaran logis dan pemecahan masalah sejak usia dini.",
+      "Mengasah kemampuan diskriminasi dan pengenalan warna visual.",
+      "Mengembangkan koordinasi mata-tangan dan kelenturan motorik halus pada layar sentuh.",
+      "Melatih daya konsentrasi, kesabaran, dan kemampuan berpikir strategis langkah-demi-langkah.",
+      "Mendukung pembelajaran kolaboratif di kelas interaktif melalui mode permainan bersama."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "adu-tarik-dino",
+    "title": "Tarik Dino",
+    "subtitle": "Adu Kuat!",
+    "url": "https://dino-tug-of-war.papaninteraktif.com/",
+    "description": "Permainan tarik tambang seru bertema Dinosaurus untuk mengenalkan konsep perbandingan ukuran dan kekuatan dasar.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Pengenalan konsep logika dasar dan perbandingan",
+    "bgColor": "#FF8FA3",
+    "tags": [
+      "🧠 Logika",
+      "🔢 Numerasi"
+    ],
+    "categoryKeys": [
+      "logic",
+      "numeracy"
+    ],
+    "howToPlay": [
+      "Bermain berdua dalam mode layar terbagi (split-screen).",
+      "Perhatikan soal perbandingan atau perhitungan matematika yang muncul.",
+      "Pilih jawaban benar lebih cepat dari lawanmu.",
+      "Tarik tali ke arah dinosaurusmu untuk setiap jawaban yang benar."
+    ],
+    "educationalBenefits": [
+      "Melatih kecepatan pemrosesan informasi matematika.",
+      "Membangun sportivitas melalui kompetisi yang sehat.",
+      "Meningkatkan pemahaman konsep lebih besar dan lebih kecil."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "tatap-hap",
+    "title": "Tatap Hap",
+    "subtitle": "Mata Jeli",
+    "url": "https://paudgame.papaninteraktif.com/",
+    "description": "Latih fokus dan kejelian mata anak dalam mencari objek tersembunyi dengan cepat dan tepat.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Ketelitian, fokus visual, dan observasi",
+    "bgColor": "#38BDF8",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Perhatikan urutan pola atau warna yang menyala di layar.",
+      "Ingat baik-baik urutan tersebut.",
+      "Ketuk layar untuk mengulangi pola dengan urutan yang sama persis.",
+      "Tantangan akan semakin panjang dan cepat setiap ronde."
+    ],
+    "educationalBenefits": [
+      "Melatih memori jangka pendek dan daya ingat visual.",
+      "Meningkatkan rentang konsentrasi (attention span).",
+      "Membangun fokus dan kecepatan respons."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "cocok-logi",
+    "title": "Cocok Logi",
+    "subtitle": "Puzzle Anak",
+    "url": "https://logic.papaninteraktif.com/",
+    "description": "Permainan puzzle sederhana yang dirancang khusus untuk anak. Pasangkan bentuk dengan tempat yang sesuai.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Pengenalan bentuk, warna, dan motorik halus",
+    "bgColor": "#F472B6",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Perhatikan bentuk atau objek utama yang ditampilkan.",
+      "Cari bentuk pasangannya dari beberapa pilihan yang ada.",
+      "Tarik garis atau seret objek ke tempat yang memiliki siluet atau fungsi serupa.",
+      "Selesaikan semua pasangan untuk melanjutkan."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan logika relasi dan pengelompokan objek.",
+      "Melatih motorik halus saat menyentuh dan menarik objek.",
+      "Meningkatkan kemampuan identifikasi visual anak PAUD."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "mesin-koleksi",
+    "title": "Mesin Gacha",
+    "subtitle": "Buka Kejutan",
+    "url": "https://lucky.papaninteraktif.com/",
+    "description": "Tarik tuas mesin Gacha virtual dan dapatkan berbagai kejutan menarik di dalamnya!",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Mengenal konsep sebab-akibat sederhana",
+    "bgColor": "#C084FC",
+    "tags": [
+      "🎯 Ice Breaking"
+    ],
+    "categoryKeys": [
+      "ice-breaking"
+    ],
+    "howToPlay": [
+      "Sentuh layar untuk memasukkan koin virtual.",
+      "Tarik tuas atau putar tombol pada mesin Gacha.",
+      "Buka kapsul yang keluar untuk melihat hadiah hewan atau bentuk.",
+      "Kumpulkan semua kejutan di rak koleksi."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan konsep sebab dan akibat secara sederhana.",
+      "Memberikan stimulus hadiah (reward) untuk eksplorasi.",
+      "Melatih motorik tangan dan kesabaran."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "pendekar-balon",
+    "title": "Pendekar Balon",
+    "subtitle": "Penjaga Angka",
+    "url": "https://pop.papaninteraktif.com/",
+    "description": "Bantu Pendekar Balon menjaga angka dan huruf yang berterbangan. Cara interaktif mengenalkan simbol dasar pada anak.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Pengenalan dasar huruf alfabet dan angka",
+    "bgColor": "#FB923C",
+    "tags": [
+      "📚 Literasi",
+      "🔢 Numerasi"
+    ],
+    "categoryKeys": [
+      "literacy",
+      "numeracy"
+    ],
+    "howToPlay": [
+      "Dengarkan instruksi angka atau huruf yang harus dicari.",
+      "Perhatikan balon-balon terbang yang membawa angka atau huruf.",
+      "Ketuk (pop) balon yang membawa target yang tepat.",
+      "Jangan ketuk balon yang membawa jawaban salah."
+    ],
+    "educationalBenefits": [
+      "Melatih pengenalan dini pada huruf alfabet dan angka.",
+      "Meningkatkan koordinasi mata-tangan dan respons motorik.",
+      "Melatih pendengaran dan instruksi selektif."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "detektif-cilik",
+    "title": "Detektif",
+    "subtitle": "Cari Benda",
+    "url": "https://gamedetektif.papaninteraktif.com/",
+    "description": "Jadilah detektif cilik yang hebat! Cari dan temukan berbagai benda tersembunyi di sekitar kita.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Fokus, konsentrasi, dan pengenalan kosakata benda",
+    "bgColor": "#2DD4BF",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Lihat daftar benda yang harus ditemukan di panel bawah.",
+      "Telusuri gambar pemandangan yang penuh dengan berbagai objek.",
+      "Ketuk benda yang tersembunyi jika kamu menemukannya.",
+      "Gunakan kaca pembesar jika kesulitan mencari benda yang kecil."
+    ],
+    "educationalBenefits": [
+      "Meningkatkan fokus dan ketelitian visual (visual scanning).",
+      "Menambah perbendaharaan kosakata benda sehari-hari.",
+      "Melatih kesabaran dalam observasi."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "mewarnai",
+    "title": "Sayuran",
+    "subtitle": "Hijau Bergizi",
+    "url": "https://veggie.papaninteraktif.com//",
+    "description": "Aktivitas mewarnai digital bertema sayuran. Mengenalkan jenis-jenis sayur bergizi sambil menyalurkan kreativitas.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Kreativitas seni, pengenalan warna, dan literasi nama sayur",
+    "bgColor": "#FBBF24",
+    "tags": [
+      "📚 Literasi"
+    ],
+    "categoryKeys": [
+      "literacy"
+    ],
+    "howToPlay": [
+      "Pilih sketsa gambar sayuran yang ingin diwarnai.",
+      "Pilih warna dari palet di sebelah layar.",
+      "Ketuk area kosong pada gambar untuk mengisi warna (fill).",
+      "Campurkan berbagai warna untuk membuat karyamu lebih hidup."
+    ],
+    "educationalBenefits": [
+      "Mengembangkan kreativitas dan ekspresi seni anak.",
+      "Mengenalkan berbagai jenis sayuran sehat secara visual.",
+      "Meningkatkan pengenalan warna dasar dan kombinasi."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "belajar-angka",
+    "title": "Lab Warna",
+    "subtitle": "Campur Warna",
+    "url": "https://color.papaninteraktif.com/",
+    "description": "Bermain di laboratorium ajaib untuk bereksperimen mencampur berbagai warna dasar menjadi warna baru.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Eksperimen sains dasar dan pengenalan teori warna",
+    "bgColor": "#4ADE80",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Pilih dua tabung reaksi yang berisi warna dasar (merah, kuning, biru).",
+      "Tuangkan isi kedua tabung ke dalam gelas ukur.",
+      "Aduk perlahan dan perhatikan perubahan warna yang terjadi.",
+      "Coba temukan semua kombinasi warna sekunder yang mungkin."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan teori warna dasar dan pencampuran warna.",
+      "Memberikan pengalaman observasi eksperimen sains sederhana.",
+      "Merangsang rasa ingin tahu logis."
+    ],
+    "isNew": true
+  },
+  {
+    "id": "gabung-ceria",
+    "title": "Gabung Ceria",
+    "subtitle": "Tarik Kejutan",
+    "url": "https://suika.papaninteraktif.com/",
+    "description": "Permainan menjatuhkan dan menggabungkan objek serupa agar menjadi lebih besar (gaya permainan Suika).",
+    "audience": "PAUD, SD",
+    "educationLevel": "general",
+    "learningFocus": "Logika ruang dan fisika sederhana",
+    "bgColor": "#A3E635",
+    "tags": [
+      "🎯 Ice Breaking",
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "ice-breaking",
+      "logic"
+    ],
+    "howToPlay": [
+      "Perhatikan objek (buah atau bentuk) yang muncul di atas layar.",
+      "Geser objek ke kiri atau kanan untuk menentukan posisi jatuh.",
+      "Jatuhkan objek agar menyentuh objek lain yang identik.",
+      "Dua objek identik akan bergabung menjadi satu objek yang lebih besar."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan konsep ukuran dan hukum fisika sentuhan ringan.",
+      "Melatih perencanaan spasial agar tumpukan tidak melewati batas.",
+      "Meningkatkan strategi visual secara menyenangkan."
+    ],
+    "isNew": false
+  },
+  {
+    "id": "dunia-hewan",
+    "title": "Dunia Hewan",
+    "subtitle": "Beri Makan",
+    "url": "https://animal-match-kids.papaninteraktif.com/",
+    "description": "Mengenal jenis makanan setiap hewan. Pasangkan makanan yang tepat untuk satwa kesayanganmu.",
+    "audience": "PAUD, SD",
+    "educationLevel": "paud",
+    "learningFocus": "Pengetahuan alam dasar dan logika mencocokkan",
+    "bgColor": "#FDBA74",
+    "tags": [
+      "🧠 Logika"
+    ],
+    "categoryKeys": [
+      "logic"
+    ],
+    "howToPlay": [
+      "Lihat hewan lucu yang sedang lapar di layar.",
+      "Perhatikan berbagai jenis makanan yang disediakan di sekitarnya.",
+      "Tarik makanan yang tepat dan berikan kepada hewan tersebut (misal: pisang untuk monyet).",
+      "Pelajari respons gembira hewan saat diberi makanan yang benar."
+    ],
+    "educationalBenefits": [
+      "Mengenalkan pengetahuan dasar IPA tentang jenis hewan dan makanannya.",
+      "Melatih kemampuan klasifikasi dan pencocokan.",
+      "Membangun rasa empati terhadap makhluk hidup."
+    ],
+    "isNew": false
+  }
+]

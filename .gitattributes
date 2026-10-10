@@ -1,0 +1,32 @@
+# Normalisasi akhir baris.
+# Repositori menyimpan LF; berkas pada Windows boleh memakai CRLF di working copy.
+# Tanpa ini, setiap checkout di Windows akan mengubah seluruh berkas.
+
+* text=auto eol=lf
+
+# Berkas biner: jangan pernah diubah akhir barisnya
+*.png  binary
+*.jpg  binary
+*.jpeg binary
+*.gif  binary
+*.webp binary
+*.ico  binary
+*.woff binary
+*.woff2 binary
+*.ttf  binary
+
+# Skrip shell pada runner Linux harus tetap LF
+*.sh   text eol=lf
+
+# Skrip Windows boleh CRLF
+*.ps1  text eol=crlf
+*.bat  text eol=crlf
+*.cmd  text eol=crlf
+
+# Berkas workflow GitHub Actions harus LF
+.github/workflows/*.yml text eol=lf
+
+# Perkakas Git: jangan tampilkan berkas ini sebagai bahasa utama repositori
+docs/shots/* linguist-documentation
+docs/*.md    linguist-documentation
+docs/*.json  linguist-documentation

@@ -1,0 +1,35 @@
+# ── Sistem operasi ──
+.DS_Store
+Thumbs.db
+desktop.ini
+ehthumbs.db
+
+# ── Editor / IDE ──
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+
+# ── Log & cache ──
+*.log
+npm-debug.log*
+.cache/
+.tmp/
+tmp/
+
+# ── Node (walau proyek ini tanpa dependensi) ──
+node_modules/
+.pnpm-store/
+
+# ── Hasil uji & tangkapan layar sementara ──
+/coverage/
+/test-output/
+*.tmp.png
+
+# ── Berkas pribadi / data nyata anak ──
+# Ekspor data dari Area Pendamping berisi riwayat anak pengguna.
+# Jangan pernah di-commit.
+ruang-fokus-*.json
+*-data-export.json
+catatan-*.txt
